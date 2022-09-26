@@ -1,3 +1,4 @@
+
 package com.justcodeit.moyeo.study.persistence;
 
 import javax.persistence.Column;
@@ -8,13 +9,21 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * querydsl 테스트용 엔티티입니다.
  * 실제로 사용하지 않을 가능성이 높습니다.
  */
+@ToString
+@Setter
+@Getter
 @Entity
 @Table(name = "users")
 public class User {
@@ -25,17 +34,20 @@ public class User {
   private String username;
   @Column(unique = true)
   private String email;
+
   private String picture;
   @Enumerated(EnumType.STRING)
   private Role role;
 
-
-  private User(){} //for jpa reflection
   public User(String username, String email, String picture, Role role) {
     this.username = username;
     this.email = email;
     this.picture = picture;
     this.role = role;
+  }
+
+  public User() {
+
   }
 
   public User update(String username, String picture) {
