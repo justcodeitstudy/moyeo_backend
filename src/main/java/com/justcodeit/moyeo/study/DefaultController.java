@@ -1,18 +1,15 @@
 package com.justcodeit.moyeo.study;
 
-import com.justcodeit.moyeo.study.persistence.CustomPostRepository;
 import com.justcodeit.moyeo.study.persistence.CustomUserRepository;
 import com.justcodeit.moyeo.study.persistence.Post;
 import com.justcodeit.moyeo.study.persistence.PostJPARepository;
 import com.justcodeit.moyeo.study.persistence.User;
 import com.justcodeit.moyeo.study.persistence.UserJPARepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 
 /**
@@ -44,8 +41,8 @@ public class DefaultController {
   }
   @PostMapping("/post1")
   public Post createPost(){
-    long count = postRepository.count();
-    String title = "testTitle"+ count;
+    long count = postRepository.count() + 1;
+    String title = "testTitle" + count;
     String contents = "testTitle"+ count+"'s Contens";
     User user = userJPARepository.findById(count).get();
     Post post = new Post(title, contents, user);

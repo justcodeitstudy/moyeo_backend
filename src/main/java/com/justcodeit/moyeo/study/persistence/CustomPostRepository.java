@@ -1,11 +1,9 @@
 package com.justcodeit.moyeo.study.persistence;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.List;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
-import com.justcodeit.moyeo.study.persistence.QUser;
-
-import java.util.List;
 
 /**
  * querydsl 테스트용 레파지토리입니다.
