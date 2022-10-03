@@ -42,5 +42,6 @@ moyeo:
     expiryMills: 3600000
 
 springdoc:
-  default-consumes-media-type: text/yaml
-
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+  override-with-generic-response: true
