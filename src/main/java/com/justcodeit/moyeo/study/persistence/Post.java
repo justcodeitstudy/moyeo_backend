@@ -1,24 +1,30 @@
 package com.justcodeit.moyeo.study.persistence;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.Getter;
-import lombok.Setter;
+import com.justcodeit.moyeo.study.model.post.PostStatus;
+import com.justcodeit.moyeo.study.model.post.PostType;
+import com.justcodeit.moyeo.study.model.post.Recruitment;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-/**
- * querydsl 테스트용 엔티티입니다.
- * 실제로 사용하지 않을 가능성이 높습니다.
- */
+import java.util.List;
 
 @Entity
 @Table(name = "post")
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post {
 
   @Id
@@ -26,13 +32,22 @@ public class Post {
   private Long id;
   private String title;
   private String content;
+  @Enumerated(EnumType.STRING)
+  private PostType postType;
 
+  private PostStatus postStatus;
+  private String skillStack;
 
-  private Post() {
-  }
+  @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @JoinColumn(name = "post_id")
+  private List<Recruitment> recruitmentList; // 모집 분야
 
-  public Post(String title, String content) {
+  @Builder
+  public Post(String title, String content, PostType postType, String skillStack, List<Recruitment> recruitmentList) {
     this.title = title;
     this.content = content;
+    this.postType = postType;
+    this.skillStack = skillStack;
+    this.recruitmentList = recruitmentList;
   }
 }
