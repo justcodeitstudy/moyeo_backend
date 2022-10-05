@@ -24,6 +24,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
   private final TokenAuthFilter tokenAuthFilter;
 
+  private final AuthenticationEntryPoint authenticationEntryPoint;
+
   @Bean
   public AuthenticationManager authenticationManager() throws Exception {
     return super.authenticationManager();
@@ -51,7 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .logout().disable()
         .cors().and().csrf().disable()
         .exceptionHandling()
-        .authenticationEntryPoint(new AuthenticationEntryPoint()) // 인증문제 발생시 처리
+        .authenticationEntryPoint(authenticationEntryPoint) // 인증문제 발생시 처리
         .and()
         .oauth2Login()
         .userInfoEndpoint().userService(oAuthUserService) //oauth 인증후 처리
