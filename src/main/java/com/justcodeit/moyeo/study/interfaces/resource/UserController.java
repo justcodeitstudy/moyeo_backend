@@ -23,11 +23,24 @@ public class UserController {
 
     private final UserService userService;
 
-    @Operation(summary = "프로필 조회", description = "자신의 또는 다른 회원의 프로필 조 ")
+    @Operation(summary = "다른 사람 프로필 조회", description = "다른 회원의 프로필 조회")
     @GetMapping("/{userId}")
     public ResponseEntity<BaseResponse> getProfile(@PathVariable String userId) {
         try {
             var getUserResDto = userService.accessProfile(userId);
+            return ResponseEntity.ok(new SuccessRes<>(getUserResDto));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(new FailureRes<>(500, e.getMessage()));
+        }
+    }
+
+    @Operation(summary = "내 프로필 조회", description = "자신의 프로필 조회")
+    @Parameter(name = "X-MOYEO-AUTH-TOKEN", in = ParameterIn.HEADER, required = true)
+    @Secured("ROLE_USER")
+    @GetMapping("/me")
+    public ResponseEntity<BaseResponse> getProfile(@AuthenticationPrincipal UserToken userToken) {
+        try {
+            var getUserResDto = userService.accessProfile(userToken.getUsername());
             return ResponseEntity.ok(new SuccessRes<>(getUserResDto));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(new FailureRes<>(500, e.getMessage()));
@@ -41,7 +54,7 @@ public class UserController {
     public ResponseEntity<BaseResponse> editProfile(@AuthenticationPrincipal UserToken userToken, @RequestBody EditUserReqDto editUserReqDto) {
         try {
             // TODO userId나 unique값을 넘길 필요 있어보임 체크
-            var getUserResDto = userService.editProfile(userToken.getUsername(), editUserReqDto);
+            var getUserResDto = userService.editProfile("userId", editUserReqDto);
             return ResponseEntity.ok(new SuccessRes<>(getUserResDto));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(new FailureRes<>(500, e.getMessage()));

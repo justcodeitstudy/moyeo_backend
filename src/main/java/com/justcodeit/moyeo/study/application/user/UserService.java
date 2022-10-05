@@ -23,13 +23,9 @@ public class UserService {
 
     public GetUserResDto getUser(User user) {
         return new GetUserResDto(
-                user.getUserId(),
                 user.getEmail(),
                 user.getNickname(),
                 user.getIntroduction(),
-                user.getJob1(),
-                user.getJob2(),
-                user.getJob3(),
                 user.getPortfolio(),
                 user.getSkills()
         );
@@ -42,9 +38,6 @@ public class UserService {
         user.editProfile(
                 editUserReqDto.getNickname(),
                 editUserReqDto.getIntroduction(),
-                editUserReqDto.getJob1(),
-                editUserReqDto.getJob2(),
-                editUserReqDto.getJob3(),
                 editUserReqDto.getPortfolio(),
                 editUserReqDto.getSkills()
         );
