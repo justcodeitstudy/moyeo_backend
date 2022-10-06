@@ -2,7 +2,6 @@ package com.justcodeit.moyeo.study.interfaces.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.List;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
