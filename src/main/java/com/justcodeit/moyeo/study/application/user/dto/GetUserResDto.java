@@ -1,10 +1,10 @@
 package com.justcodeit.moyeo.study.application.user.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class GetUserResDto {
     private final String email;
     private final String nickname;

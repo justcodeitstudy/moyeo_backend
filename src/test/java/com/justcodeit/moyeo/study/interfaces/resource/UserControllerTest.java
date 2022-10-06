@@ -1,36 +1,28 @@
 package com.justcodeit.moyeo.study.interfaces.resource;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.justcodeit.moyeo.study.application.user.UserService;
+import com.justcodeit.moyeo.study.application.user.dto.EditUserReqDto;
 import com.justcodeit.moyeo.study.application.user.dto.GetUserResDto;
-import com.justcodeit.moyeo.study.persistence.User;
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willReturn;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -49,6 +41,9 @@ class UserControllerTest {
     @Autowired
     private WebApplicationContext context;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @BeforeEach
     public void setup() {
         mockMvc = MockMvcBuilders
@@ -57,30 +52,49 @@ class UserControllerTest {
                 .build();
     }
 
-
-    @DisplayName("[API][GET] 게시글 리스트 조회")
+    @DisplayName("프로필 조회")
     @Test
-    void testGetAllContents() throws Exception {
+    void accessProfileTest() throws Exception {
         //given
-        User user = new User("username","email","picture", User.Role.USER);
         given(userService.accessProfile("userId"))
         .willReturn(new GetUserResDto(
-                "userId",
                 "email",
-                user.getNickname(),
-                user.getIntroduction(),
-                user.getJob1(),
-                user.getJob2(),
-                user.getJob3(),
-                user.getPortfolio(),
-                user.getSkills()
+                "nickname",
+                "introduction",
+                "portfolio",
+                "skills"
         ));
 
-        //when & then
         mockMvc.perform(get("/users/userId")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andDo(MockMvcResultHandlers.print())
+                .andExpect(content().string("{\"code\":200,\"data\":{\"email\":\"email\",\"nickname\":\"nickname\",\"introduction\":\"introduction\",\"portfolio\":\"portfolio\",\"skills\":\"skills\"}}"))
+                .andExpect(status().isOk());
+    }
+
+    @DisplayName("프로필 수정")
+    @Test
+    @WithMockUser(username = "test", password = "test", roles = "USER")
+    void editProfileTest() throws Exception {
+        given(userService.editProfile(eq("userId"), any(EditUserReqDto.class)))
+                .willReturn(new GetUserResDto(
+                        "email",
+                        "nicknameedit",
+                        "introductionedit",
+                        "portfolioedit",
+                        "skillsedit"
+                ));
+
+        Map<String, String> input = new HashMap<>();
+        input.put("nickname", "nicknameedit");
+        input.put("introduction", "introductionedit");
+        input.put("portfolio", "portfolioedit");
+        input.put("skills", "skillsedit");
+
+        mockMvc.perform(patch("/users/me")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(input)))
+                .andExpect(content().string("{\"code\":200,\"data\":{\"email\":\"email\",\"nickname\":\"nicknameedit\",\"introduction\":\"introductionedit\",\"portfolio\":\"portfolioedit\",\"skills\":\"skillsedit\"}}"))
                 .andExpect(status().isOk());
     }
 }
