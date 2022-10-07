@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -35,6 +36,13 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
   @Override
   protected ResponseEntity<Object> handleBindException(
       BindException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+    return handleExceptionInternal(ex, ErrorCode.INVALID_INPUT_VALUE);
+  }
+
+  @Override
+  protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+      HttpHeaders headers, HttpStatus status, WebRequest request) {
 
     return handleExceptionInternal(ex, ErrorCode.INVALID_INPUT_VALUE);
   }
