@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserController {
 
-  private final JwtProvider jwtProvider;
+//  private final JwtProvider jwtProvider;
 
   @Operation(summary = "로그인 확인 ", description = "요청시 사용된 jwt가 유효한지 확인 및 본인의 데이터 전달 ")
   @Parameter(name = "X-MOYEO-AUTH-TOKEN", in = ParameterIn.HEADER, required = true)
