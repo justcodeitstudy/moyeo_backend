@@ -45,7 +45,7 @@ public class ProviderUserInfo {
       Map<String, Object> attributes) {
     return new ProviderUserInfo(attributes, userNameAttributeName, (String) attributes.get("name"),
         (String) attributes.get("email"), (String) attributes.get("avatar_url"),
-        (String) attributes.get(userNameAttributeName), "github");
+        String.valueOf((Integer) attributes.get(userNameAttributeName)), "github");
   }
 
   private static ProviderUserInfo ofGoogle(String userNameAttributeName,
