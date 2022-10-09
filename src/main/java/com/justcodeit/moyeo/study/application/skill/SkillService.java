@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class SkillService {
+
     private final SkillRepository skillRepository;
     private final S3Service s3Service;
 
@@ -34,5 +35,9 @@ public class SkillService {
             return Boolean.FALSE;
         }
         return Boolean.TRUE;
+    }
+
+    public boolean isValidId(Long id) {
+        return skillRepository.existsSkillById(id);
     }
 }

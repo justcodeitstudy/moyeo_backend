@@ -1,10 +1,10 @@
 package com.justcodeit.moyeo.study.application.user.exception;
 
-public class UserCannotFoundException extends RuntimeException {
+import com.justcodeit.moyeo.study.application.exception.ErrorCode;
+import com.justcodeit.moyeo.study.application.exception.MoyeoException;
 
-    private static final String msg = "Cannot found User";
-
+public class UserCannotFoundException extends MoyeoException {
     public UserCannotFoundException() {
-        super(msg);
+        super(ErrorCode.NOT_FOUND_USER);
     }
 }
