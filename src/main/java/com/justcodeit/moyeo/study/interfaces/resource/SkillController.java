@@ -1,7 +1,8 @@
 package com.justcodeit.moyeo.study.interfaces.resource;
 
 import com.justcodeit.moyeo.study.application.skill.SkillService;
-import com.justcodeit.moyeo.study.interfaces.dto.skill.SkillCreateRequestDto;
+
+import com.justcodeit.moyeo.study.interfaces.dto.skill.SkillCreateDto;
 import com.justcodeit.moyeo.study.model.skill.SkillDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +24,11 @@ public class SkillController {
     private final SkillService skillService;
 
     @PostMapping
-    public ResponseEntity<SkillDto> createSkill(@ModelAttribute("skillCreateDto") @Valid SkillCreateRequestDto skillCreateRequestDto) throws IOException {
-        if(!skillCreateRequestDto.isSvg()) {
+    public ResponseEntity<SkillDto> createSkill(@ModelAttribute("skillCreateDto") @Valid SkillCreateDto skillCreateDto) throws IOException {
+        if(!skillCreateDto.isSvg()) {
             throw new IOException();
         }
-        return ResponseEntity.ok(skillService.saveSkill(skillCreateRequestDto));
+        return ResponseEntity.ok(skillService.saveSkill(skillCreateDto));
     }
     @GetMapping
     public ResponseEntity<SkillDto> findSkillByName(@RequestParam(name = "name") String name) {
