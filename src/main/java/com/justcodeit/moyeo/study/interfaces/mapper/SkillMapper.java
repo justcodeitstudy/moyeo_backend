@@ -1,6 +1,6 @@
 package com.justcodeit.moyeo.study.interfaces.mapper;
 
-import com.justcodeit.moyeo.study.interfaces.dto.skill.SkillCreateDto;
+import com.justcodeit.moyeo.study.interfaces.dto.skill.SkillCreateRequestDto;
 import com.justcodeit.moyeo.study.model.skill.SkillDto;
 import com.justcodeit.moyeo.study.persistence.Skill;
 import org.mapstruct.Mapper;
@@ -17,7 +17,7 @@ public interface SkillMapper {
     Skill skillDtoToEntity(SkillDto skillDto);
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "imageUrl", ignore = true)
-    SkillDto skillDtoToEntity(SkillCreateDto skillCreateDto);
+    SkillDto skillDtoToEntity(SkillCreateRequestDto skillCreateRequestDto);
 
     List<SkillDto> entityListToSkillList(List<Skill> skill);
 }
