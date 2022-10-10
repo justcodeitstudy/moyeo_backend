@@ -9,6 +9,7 @@ import com.justcodeit.moyeo.study.application.JwtProvider;
 import com.justcodeit.moyeo.study.application.oauth.OAuth2AuthenticationSuccessHandler;
 import com.justcodeit.moyeo.study.application.oauth.OAuthUserService;
 import com.justcodeit.moyeo.study.config.ApplicationConfig;
+import com.justcodeit.moyeo.study.config.S3Config;
 import com.justcodeit.moyeo.study.config.SecurityConfig;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -23,22 +24,18 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 @ActiveProfiles("local")
-@WebMvcTest
-@ContextConfiguration(classes = {ApplicationEntry.class, ApplicationConfig.class, SecurityConfig.class})
+@WebMvcTest(controllers = {UserController.class})
+@ContextConfiguration(classes = {ApplicationEntry.class, ApplicationConfig.class,
+    SecurityConfig.class})
 // @WebMvcTest 가 컨트롤러 레이어의 컴포넌트만 생성해주므로 필요한 컴포넌트를 생성해 주는 작업이 필요함
 // 무슨말인지 모르겠다면 제외해보고 로그를 확인
 // 사실 이쯤되면 @SpringBootTest 를 사용하는거랑 별 차이 없다는게 무슨말인지 이해 될듯
 class UserControllerTest {
 
   //{
-  //    "code": 200,
-  //    "data": {
-  //        "username": null,
+  //        "displayName": "dfdfd",
   //        "email": "void@nowhere.com",
-  //        "role": "ROLE_USER",
-  //        "skills": [
-  //            "code_python"
-  //        ]
+  //        "role": "ROLE_USER"
   //    }
   //} //현재 리턴되는 json string
 
@@ -60,8 +57,9 @@ class UserControllerTest {
   void me() throws Exception {
     var username = "randomusername";
     var role = "ROLE_USER";
-    var email = "void@nowhere.com";// 현재 더미코드로 하드코딩
-    var jwtString = jwtProvider.generate(Map.of("username", username, "role", role));
+    var email = "void@nowhere.com";
+    var jwtString = jwtProvider.generate(
+        Map.of("displayName", username, "email", email, "role", role));
 
     MvcResult res = mockMvc.perform(MockMvcRequestBuilders
             .get("/user/me")
@@ -70,9 +68,9 @@ class UserControllerTest {
         ) // @WithMockUser 설정이 있으니 header의 jwt 가 별의미 없다고 생각할수 있으나,
         //실제로 UserController.me(UserToken token) 메소드의 userToken이 null로 전달되기 때문에 jwtstring을 넘겨줘야함
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.data.email", equalTo(email)))
-        .andExpect(jsonPath("$.data.username", equalTo(username)))
-        .andExpect(jsonPath("$.data.role", equalTo(role)))
+        .andExpect(jsonPath("$.email", equalTo(email)))
+        .andExpect(jsonPath("$.nickname", equalTo(username)))
+        .andExpect(jsonPath("$.role", equalTo(role)))
         .andReturn();
 
     var resString = res.getResponse().getContentAsString();
