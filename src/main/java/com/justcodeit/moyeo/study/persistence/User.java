@@ -1,14 +1,11 @@
 package com.justcodeit.moyeo.study.persistence;
 
 import com.justcodeit.moyeo.study.model.type.Role;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.Table;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 
@@ -23,6 +20,7 @@ public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+  private String userId;
   private String email;
   private String picture;
   @Enumerated(EnumType.STRING)
@@ -32,17 +30,25 @@ public class User {
   private String providerType;
   private String domesticId; // provider가 가지고 있는 유저 구분값
 
-  private User() {
+  private String nickname;
+  private String introduction;
+
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<UserSkill> userSkills = new ArrayList<>();
+
+  protected User() {
   }
 
-  public User(String email, String picture, Role role, String displayName, String providerType,
-      String domesticId) {
+  public User(String userId, String email, String picture, Role role, String displayName, String providerType,
+      String domesticId, String nickname) {
+    this.userId = userId;
     this.email = email;
     this.picture = picture;
     this.role = role;
     this.displayName = displayName;
     this.providerType = providerType;
     this.domesticId = domesticId;
+    this.nickname = nickname;
   }
 
   public User update(String displayName, String picture) {
@@ -71,4 +77,29 @@ public class User {
     return domesticId;
   }
 
+  public String getPicture() { return picture; }
+
+  public String getNickname() { return nickname; }
+
+  public String getIntroduction() { return introduction; }
+
+  public String getUserId() { return userId; }
+
+  public List<Long> getSkillIds() {
+    return userSkills.stream()
+            .map(userSkill -> userSkill.getSkillId())
+            .collect(Collectors.toList());
+  }
+
+  public void editProfile(String nickname, String introduction, List<Long> skillIds) {
+    this.nickname = nickname;
+    this.introduction = introduction;
+    this.userSkills.clear();
+    skillIds.forEach(skillId -> addUserSkill(new UserSkill(this, skillId)));
+  }
+
+  private void addUserSkill(UserSkill userSkill) {
+    this.userSkills.add(userSkill);
+    userSkill.setUser(this);
+  }
 }

@@ -1,10 +1,8 @@
 package com.justcodeit.moyeo.study.application.user;
 
 import com.justcodeit.moyeo.study.application.skill.SkillService;
-import com.justcodeit.moyeo.study.application.skill.exception.SkillCannotFoundException;
 import com.justcodeit.moyeo.study.application.user.dto.EditUserReqDto;
 import com.justcodeit.moyeo.study.application.user.dto.GetUserResDto;
-import com.justcodeit.moyeo.study.application.user.exception.UserCannotFoundException;
 import com.justcodeit.moyeo.study.persistence.User;
 import com.justcodeit.moyeo.study.persistence.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +31,8 @@ public class UserService {
 
     private User getUser(String userId) {
         return userRepository.findByUserId(userId)
-                .orElseThrow(() -> new UserCannotFoundException());
+                .orElseThrow(() -> new RuntimeException());
+                        //new UserCannotFoundException());
     }
 
     @Transactional
@@ -50,7 +49,8 @@ public class UserService {
     private void checkSkillIds(List<Long> skillIds) {
         boolean isValid = skillIds.stream().allMatch(skillId -> skillService.isValidId(skillId));
         if (!isValid) {
-            throw new SkillCannotFoundException();
+            throw new RuntimeException();
+                    //new SkillCannotFoundException();
         }
     }
 }
