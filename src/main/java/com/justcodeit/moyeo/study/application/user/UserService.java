@@ -29,6 +29,6 @@ public class UserService {
 
     private User getUser(String userId) {
         return userRepository.findByUserId(userId)
-            .orElseThrow(() -> new UserCannotFoundException());
+            .orElseThrow(UserCannotFoundException::new);
     }
 }
