@@ -25,23 +25,22 @@ public class S3Service {
     private final AmazonS3 amazonS3;
     private final TransferManager transferManager;
 
-    @Value("${moyeo.url.s3EndPoint}")
-    private String S3_ENDPOINT;
+    private final String S3_ENDPOINT = "https://moyeo-skillstack.s3.ap-northeast-2.amazonaws.com/";
 
     /**
-     * S3에 한개의 파일 업로드 하는 코드 단일 파일 업로드하기 위해서 사용.
+     * S3에 한개의 파일 업로드하기 위해서 사용.
      *
      * @param multipartFile
      * @return
      * @throws IOException
      */
-    public String fileUpload(MultipartFile multipartFile) throws IOException {
+    public String fileUpload(MultipartFile multipartFile, String folderName) throws IOException{
         String fileName = multipartFile.getOriginalFilename();
-
+        String filePath = folderName+"/"+fileName;
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(multipartFile.getInputStream().available());
 
-        amazonS3.putObject(bucket, fileName, multipartFile.getInputStream(), objectMetadata);
+        amazonS3.putObject(bucket, filePath, multipartFile.getInputStream(), objectMetadata);
         return amazonS3.getUrl(bucket, fileName).toString();
     }
 
