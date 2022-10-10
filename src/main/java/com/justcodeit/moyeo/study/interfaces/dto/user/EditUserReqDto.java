@@ -1,4 +1,4 @@
-package com.justcodeit.moyeo.study.application.user.dto;
+package com.justcodeit.moyeo.study.interfaces.dto.user;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
