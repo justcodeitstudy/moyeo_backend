@@ -1,7 +1,7 @@
 package com.justcodeit.moyeo.study.interfaces.resource;
 
 import com.justcodeit.moyeo.study.application.user.UserService;
-import com.justcodeit.moyeo.study.application.user.dto.EditUserReqDto;
+import com.justcodeit.moyeo.study.interfaces.dto.user.EditUserReqDto;
 import com.justcodeit.moyeo.study.interfaces.dto.BaseResponse;
 import com.justcodeit.moyeo.study.model.jwt.UserToken;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,7 +21,9 @@ public class UserController {
 
     private final UserService userService;
 
-    @Operation(summary = "다른 사람 프로필 조회", description = "다른 회원의 프로필 조회")
+    @Operation(summary = "다른 회원 프로필 조회", description = "다른 회원의 프로필 조회")
+    @Parameter(name = "X-MOYEO-AUTH-TOKEN", in = ParameterIn.HEADER, required = true)
+    @Secured("ROLE_USER")
     @GetMapping("/{userId}")
     public ResponseEntity getProfile(@PathVariable String userId) {
         var getUserResDto = userService.accessProfile(userId);
@@ -37,7 +39,7 @@ public class UserController {
         return ResponseEntity.ok(getUserResDto);
     }
 
-    @Operation(summary = "프로필 수정 ", description = "요청시 사용된 jwt가 유효한지 확인 및 프로필 수정")
+    @Operation(summary = "내 프로필 수정 ", description = "요청시 사용된 jwt가 유효한지 확인 및 프로필 수정")
     @Parameter(name = "X-MOYEO-AUTH-TOKEN", in = ParameterIn.HEADER, required = true)
     @Secured("ROLE_USER")
     @PatchMapping("/me")
@@ -45,13 +47,4 @@ public class UserController {
         userService.editProfile(userToken.getUserId(), editUserReqDto);
         return ResponseEntity.ok(null);
     }
-
-//    @Operation(summary = "프로필 이미지 수정", description = "요청시 사용된 jwt가 유효한지 확인 및 프로필 이미지 수정")
-//    @Parameter(name = "X-MOYEO-AUTH-TOKEN", in = ParameterIn.HEADER, required = true)
-//    @Secured("ROLE_USER")
-//    @PatchMapping("/me/picture")
-//    public ResponseEntity<BaseResponse> editPicture(@AuthenticationPrincipal UserToken userToken, MultipartFile file){
-//        userService.editPicture(userToken.getUserId(), file);
-//        return ResponseEntity.ok(new SuccessRes<>());
-//    }
 }
