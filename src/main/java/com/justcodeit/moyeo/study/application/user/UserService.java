@@ -2,8 +2,8 @@ package com.justcodeit.moyeo.study.application.user;
 
 import com.justcodeit.moyeo.study.application.skill.SkillService;
 import com.justcodeit.moyeo.study.application.skill.exception.SkillCannotFoundException;
-import com.justcodeit.moyeo.study.application.user.dto.EditUserReqDto;
-import com.justcodeit.moyeo.study.application.user.dto.GetUserResDto;
+import com.justcodeit.moyeo.study.interfaces.dto.user.EditUserReqDto;
+import com.justcodeit.moyeo.study.interfaces.dto.user.GetUserResDto;
 import com.justcodeit.moyeo.study.application.user.exception.UserCannotFoundException;
 import com.justcodeit.moyeo.study.persistence.User;
 import com.justcodeit.moyeo.study.persistence.repository.UserRepository;
