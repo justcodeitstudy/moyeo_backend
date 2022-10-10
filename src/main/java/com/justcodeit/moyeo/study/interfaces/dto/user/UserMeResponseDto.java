@@ -7,9 +7,9 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class UserMeResponseDto {
-  private String username;
   private String email;
+  private String nickname;
   private String role;
-  private List<String> skills;
-
+//  private List<String> skills;
+  //필요한 데이터가 있다면
 }
