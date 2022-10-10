@@ -42,6 +42,6 @@ public class SkillController {
 
     @PostMapping("/upload")
     public ResponseEntity<Boolean> uploadZip() {
-        return ResponseEntity.ok(skillService.skillcreateAllFromS3());
+        return ResponseEntity.ok(skillService.skillSaveAllFromS3());
     }
 }
