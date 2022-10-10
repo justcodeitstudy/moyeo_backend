@@ -16,6 +16,8 @@ public enum ErrorCode {
 
   NOT_FOUND_USER(404, "U001", "No such User"),
 
+  NOT_FOUND_SKILL(404, "SK001", "No such Skill"),
+
   JWT_DECODE_FAILURE(500, "J001", "JWT cannot be decoded"),
   JWT_ENCODE_FAILURE(500, "J002", "DTO encode failure"),
 
