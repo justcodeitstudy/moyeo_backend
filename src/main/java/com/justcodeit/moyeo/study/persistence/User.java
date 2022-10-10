@@ -95,7 +95,7 @@ public class User {
     this.nickname = nickname;
     this.introduction = introduction;
     this.userSkills.clear();
-    skillIds.forEach(skillId -> addUserSkill(new UserSkill(this, skillId)));
+    skillIds.stream().distinct().forEach(skillId -> addUserSkill(new UserSkill(this, skillId)));
   }
 
   private void addUserSkill(UserSkill userSkill) {
