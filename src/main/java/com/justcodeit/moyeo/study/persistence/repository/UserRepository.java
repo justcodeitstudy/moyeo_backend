@@ -8,9 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * UserJPA CRUD 테스트용 레파지토리입니다.
  */
 public interface UserRepository extends JpaRepository<User, Long> {
-
-
-  Optional<User> findByEmail(String email);
-
+  
   Optional<User> findByDomesticIdAndProviderType(String domesticId, String providerType);
+
+  Optional<User> findByUserId(String userId);
 }
