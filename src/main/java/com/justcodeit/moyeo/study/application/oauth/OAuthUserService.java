@@ -1,6 +1,5 @@
 package com.justcodeit.moyeo.study.application.oauth;
 
-import com.justcodeit.moyeo.study.common.RandomIdUtil;
 import com.justcodeit.moyeo.study.common.UserIdGenerator;
 import com.justcodeit.moyeo.study.model.ModelConverter;
 import com.justcodeit.moyeo.study.model.oauth.ProviderUserInfo;
