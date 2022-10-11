@@ -2,6 +2,7 @@ package com.justcodeit.moyeo.study.persistence;
 
 import com.justcodeit.moyeo.study.model.type.SkillCategory;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import javax.persistence.Column;
@@ -35,6 +36,7 @@ public class Skill {
     @Column(name = "order_num")
     private Integer orderNum;
 
+    @Builder
     public Skill(SkillCategory skillCategory, String folderName, String name, String imageUrl, Integer orderNum) {
         this.skillCategory = skillCategory;
         this.folderName = folderName;
