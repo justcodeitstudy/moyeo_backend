@@ -1,7 +1,7 @@
 package com.justcodeit.moyeo.study.application.skill;
 
 import com.justcodeit.moyeo.study.application.aws.s3.S3Service;
-import com.justcodeit.moyeo.study.interfaces.dto.skill.SkillCreateDto;
+import com.justcodeit.moyeo.study.interfaces.dto.skill.SkillCreateRequestDto;
 import com.justcodeit.moyeo.study.interfaces.mapper.SkillMapper;
 import com.justcodeit.moyeo.study.model.skill.SkillCategoryConverter;
 import com.justcodeit.moyeo.study.model.skill.SkillDto;
@@ -22,9 +22,9 @@ public class SkillService {
     private final SkillRepository skillRepository;
     private final S3Service s3Service;
 
-    public SkillDto saveSkill(SkillCreateDto skillCreateDto) throws IOException {
-        String url = s3Service.fileUpload(skillCreateDto.getFile(), skillCreateDto.getFolderName());
-        SkillDto skillDto = SkillMapper.SKILL_INSTANCE.skillDtoToEntity(skillCreateDto);
+    public SkillDto saveSkill(SkillCreateRequestDto skillCreateRequestDto) throws IOException {
+        String url = s3Service.fileUpload(skillCreateRequestDto.getFile(), skillCreateRequestDto.getFolderName());
+        SkillDto skillDto = SkillMapper.SKILL_INSTANCE.skillDtoToEntity(skillCreateRequestDto);
         skillDto.setImageUrl(url);
 
         Skill skill = SkillMapper.SKILL_INSTANCE.skillDtoToEntity(skillDto);
