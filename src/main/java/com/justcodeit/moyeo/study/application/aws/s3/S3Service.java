@@ -25,8 +25,6 @@ public class S3Service {
     private final AmazonS3 amazonS3;
     private final TransferManager transferManager;
 
-    private final String S3_ENDPOINT = "https://moyeo-skillstack.s3.ap-northeast-2.amazonaws.com/";
-
     /**
      * S3에 한개의 파일 업로드하기 위해서 사용.
      *
