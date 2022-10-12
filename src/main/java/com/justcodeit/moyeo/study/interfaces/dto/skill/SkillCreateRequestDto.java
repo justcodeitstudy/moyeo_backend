@@ -19,6 +19,7 @@ public class SkillCreateRequestDto {
     @NotBlank
     private String name;
     private Integer orderNum;
+    private String imageUrl;
 
     public boolean isSvg() {
         return file.getContentType().equals("image/svg+xml");

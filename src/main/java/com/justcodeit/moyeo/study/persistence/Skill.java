@@ -37,7 +37,7 @@ public class Skill {
     private Integer orderNum;
 
     @Builder
-    public Skill(SkillCategory skillCategory, String folderName, String name, String imageUrl, Integer orderNum) {
+    private Skill(SkillCategory skillCategory, String folderName, String name, String imageUrl, Integer orderNum) {
         this.skillCategory = skillCategory;
         this.folderName = folderName;
         this.name = name;
