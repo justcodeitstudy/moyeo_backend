@@ -13,11 +13,8 @@ import java.util.List;
 public interface SkillMapper {
     SkillMapper SKILL_INSTANCE = Mappers.getMapper(SkillMapper.class);
 
+    Skill skillCreateDtoToEntity(SkillCreateRequestDto skillCreateRequestDto);
     SkillDto entityToSkillDto(Skill skill);
-    Skill skillDtoToEntity(SkillDto skillDto);
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "imageUrl", ignore = true)
-    SkillDto skillDtoToEntity(SkillCreateRequestDto skillCreateRequestDto);
 
     List<SkillDto> entityListToSkillList(List<Skill> skill);
 }
