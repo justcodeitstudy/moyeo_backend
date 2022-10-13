@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class UserToken {
-
+  private String userId;
   private String email;
   private String displayName;
   private String role;

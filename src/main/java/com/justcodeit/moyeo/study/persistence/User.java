@@ -23,6 +23,7 @@ public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+  private String userId;
   private String email;
   private String picture;
   @Enumerated(EnumType.STRING)
@@ -32,11 +33,12 @@ public class User {
   private String providerType;
   private String domesticId; // provider가 가지고 있는 유저 구분값
 
-  private User() {
+  protected User() {
   }
 
-  public User(String email, String picture, Role role, String displayName, String providerType,
+  public User(String userId, String email, String picture, Role role, String displayName, String providerType,
       String domesticId) {
+    this.userId = userId;
     this.email = email;
     this.picture = picture;
     this.role = role;
@@ -71,4 +73,5 @@ public class User {
     return domesticId;
   }
 
+  public String getUserId() { return userId; }
 }
