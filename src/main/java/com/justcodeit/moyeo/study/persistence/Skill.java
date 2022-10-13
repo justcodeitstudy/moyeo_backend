@@ -25,7 +25,7 @@ public class Skill {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "skill_category")
-    private SkillCategory skillCategory;
+    private SkillCategory category;
     @Column(name = "folder_name")
     private String folderName;
     private String name;
@@ -37,16 +37,16 @@ public class Skill {
     private Integer orderNum;
 
     @Builder
-    private Skill(SkillCategory skillCategory, String folderName, String name, String imageUrl, Integer orderNum) {
-        this.skillCategory = skillCategory;
+    private Skill(SkillCategory category, String folderName, String name, String imageUrl, Integer orderNum) {
+        this.category = category;
         this.folderName = folderName;
         this.name = name;
         this.imageUrl = imageUrl;
         this.orderNum = orderNum;
     }
 
-    public Skill(SkillCategory skillCategory, String folderName, String name, String imageUrl) {
-        this.skillCategory = skillCategory;
+    public Skill(SkillCategory category, String folderName, String name, String imageUrl) {
+        this.category = category;
         this.folderName = folderName;
         this.name = name;
         this.imageUrl = imageUrl;

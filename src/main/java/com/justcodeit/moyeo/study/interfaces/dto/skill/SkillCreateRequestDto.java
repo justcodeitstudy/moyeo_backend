@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 public class SkillCreateRequestDto {
     private MultipartFile file;
     @NotNull
-    private SkillCategory skillCategory;
+    private SkillCategory category;
     @NotBlank
     private String folderName;
     @NotBlank
