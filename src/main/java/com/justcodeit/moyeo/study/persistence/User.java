@@ -1,6 +1,10 @@
 package com.justcodeit.moyeo.study.persistence;
 
 import com.justcodeit.moyeo.study.model.type.Role;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -8,10 +12,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-
 @Table(name = "users", // user가 예약어
     indexes = {
         @Index(columnList = "email"),
@@ -33,6 +37,12 @@ public class User {
   private String providerType;
   private String domesticId; // provider가 가지고 있는 유저 구분값
 
+  private String nickname;
+  private String introduction;
+
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<UserSkill> userSkills = new ArrayList<>();
+
   protected User() {
   }
 
@@ -45,6 +55,7 @@ public class User {
     this.displayName = displayName;
     this.providerType = providerType;
     this.domesticId = domesticId;
+    this.nickname = displayName;
   }
 
   public User update(String displayName, String picture) {
@@ -74,4 +85,16 @@ public class User {
   }
 
   public String getUserId() { return userId; }
+
+  public String getPicture() { return picture; }
+
+  public String getNickname() { return nickname; }
+
+  public String getIntroduction() { return introduction; }
+
+  public List<Long> getSkillIds() {
+    return userSkills.stream()
+        .map(userSkill -> userSkill.getSkillId())
+        .collect(Collectors.toList());
+  }
 }

@@ -30,8 +30,7 @@ public class UserController {
     @Secured("ROLE_USER")
     @GetMapping("/me")
     public ResponseEntity getProfile(@Parameter(hidden=true) @AuthenticationPrincipal UserToken userToken) {
-        // TODO userToken 작업한 것 병합 후 "userId" > userToken.getUserId()로 변경
-        var getUserResDto = userService.accessProfile("userId");
+        var getUserResDto = userService.accessProfile(userToken.getUserId());
         return ResponseEntity.ok(getUserResDto);
     }
 }
