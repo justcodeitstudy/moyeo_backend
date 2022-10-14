@@ -13,16 +13,18 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserSkillService userSkillService;
 
     @Transactional(readOnly = true)
     public GetUserResDto accessProfile(String userId) {
         var user = getUser(userId);
+        var skillIds = userSkillService.getSkillIds(user.getId());
         return new GetUserResDto(
             user.getEmail(),
             user.getPicture(),
             user.getNickname(),
             user.getIntroduction(),
-            user.getSkillIds()
+            skillIds
         );
     }
 

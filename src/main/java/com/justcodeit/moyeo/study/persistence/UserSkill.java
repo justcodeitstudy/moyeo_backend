@@ -16,19 +16,15 @@ public class UserSkill {
     @Column(name = "skill_id")
     private Long skillId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
+    @Column(name = "user_id")
+    private Long userId;
 
-    public UserSkill(User user, Long skillId) {
-        this.user = user;
+    public UserSkill(Long userId, Long skillId) {
+        this.userId = userId;
         this.skillId = skillId;
     }
 
     public Long getSkillId() {
         return skillId;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 }
