@@ -47,7 +47,7 @@ public class User {
   }
 
   public User(String userId, String email, String picture, Role role, String displayName, String providerType,
-      String domesticId) {
+      String domesticId, String nickname) {
     this.userId = userId;
     this.email = email;
     this.picture = picture;
@@ -55,7 +55,7 @@ public class User {
     this.displayName = displayName;
     this.providerType = providerType;
     this.domesticId = domesticId;
-    this.nickname = displayName;
+    this.nickname = nickname;
   }
 
   public User update(String displayName, String picture) {
@@ -96,5 +96,10 @@ public class User {
     return userSkills.stream()
         .map(userSkill -> userSkill.getSkillId())
         .collect(Collectors.toList());
+  }
+
+  public void addUserSkill(UserSkill userSkill) {
+    userSkills.add(userSkill);
+    userSkill.setUser(this);
   }
 }

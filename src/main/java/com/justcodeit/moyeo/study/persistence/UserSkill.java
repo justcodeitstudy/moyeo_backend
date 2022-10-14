@@ -27,4 +27,8 @@ public class UserSkill {
     public Long getSkillId() {
         return skillId;
     }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }
