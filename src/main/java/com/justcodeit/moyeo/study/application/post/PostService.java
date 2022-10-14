@@ -14,6 +14,7 @@ import com.justcodeit.moyeo.study.persistence.repository.querydsl.PostCustomRepo
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public class PostService {
     private final PostCustomRepository postCustomRepository;
     private final RecruitmentRepository recruitmentRepository;
 
-    @Transactional(readOnly = true)
+    @Transactional
     public Long createPost(PostCreateReqDto postCreateReqDto) {
         PostMapper postMapper = PostMapper.POST_MAPPER;
         Post post = postMapper.createReqDtoToEntity(postCreateReqDto);
