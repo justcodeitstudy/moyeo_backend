@@ -40,8 +40,7 @@ public class Recruitment { // 모집 분야
         this.recruitType = recruitType;
         this.recruitPeopleNum = recruitPeopleNum;
     }
-    public Recruitment setPost(Post post) {
+    public void setPost(Post post) {
         this.post = post;
-        return this;
     }
 }

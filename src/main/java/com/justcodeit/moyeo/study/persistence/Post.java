@@ -1,5 +1,7 @@
 package com.justcodeit.moyeo.study.persistence;
 
+import com.justcodeit.moyeo.study.interfaces.dto.recruitment.RecruitmentDto;
+import com.justcodeit.moyeo.study.interfaces.mapper.RecruitmentMapper;
 import com.justcodeit.moyeo.study.model.post.PostStatus;
 import com.justcodeit.moyeo.study.model.post.RecruitStatus;
 import com.justcodeit.moyeo.study.model.post.PostType;
@@ -47,6 +49,7 @@ public class Post {
     private ProgressType progressType;
     private String contactInfo;
     private PostStatus postStatus;
+    private long viewCount;
     @CreatedDate
     private LocalDateTime createDate;
     @LastModifiedDate
@@ -69,5 +72,19 @@ public class Post {
         this.postSkills = postSkills;
         this.contactInfo = contactInfo;
         this.postStatus = postStatus;
+    }
+
+    private void viewCountIncrease() {
+        this.viewCount += 1;
+    }
+    public void setRecruitmentList(List<RecruitmentDto> recruitmentDtoList) {
+        List<Recruitment> recruitmentList = RecruitmentMapper.INSTANCE
+                                                .reqDtoListToEntityList(recruitmentDtoList);
+        recruitmentList.stream()
+            .forEach(recruitment -> recruitment.setPost(this));
+        this.recruitmentList = recruitmentList;
+    }
+    public void setPostSkills(List<PostSkill> postSkills) {
+        this.postSkills = postSkills;
     }
 }

@@ -11,10 +11,11 @@ import java.util.List;
 
 @Mapper(uses = {RecruitmentMapper.class, PostSkillMapper.class})
 public interface PostMapper {
-    PostMapper POST_MAPPER = Mappers.getMapper(PostMapper.class);
+    PostMapper INSTANCE = Mappers.getMapper(PostMapper.class);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "postSkills", ignore = true)
+    @Mapping(target = "recruitmentList", ignore = true)
     Post createReqDtoToEntity(PostCreateReqDto postCreateReqDto);
     PostResDto entityToDto(Post post);
 

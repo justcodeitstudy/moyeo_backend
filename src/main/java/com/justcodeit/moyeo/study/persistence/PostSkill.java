@@ -38,4 +38,7 @@ public class PostSkill {
         this.post = post;
         this.skill = skill;
     }
+    public void setPost(Post post) {
+        this.post = post;
+    }
 }

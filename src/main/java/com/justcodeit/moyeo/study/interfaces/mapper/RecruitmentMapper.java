@@ -10,7 +10,7 @@ import java.util.List;
 
 @Mapper
 public interface RecruitmentMapper {
-    RecruitmentMapper RECRUITMENT_MAPPER = Mappers.getMapper(RecruitmentMapper.class);
+    RecruitmentMapper INSTANCE = Mappers.getMapper(RecruitmentMapper.class);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "post", ignore = true)
