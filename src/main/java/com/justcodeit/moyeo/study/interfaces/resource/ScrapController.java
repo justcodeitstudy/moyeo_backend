@@ -18,14 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/scrap")
+@RequestMapping("/scraps")
 @RequiredArgsConstructor
 public class ScrapController {
 
   private final ScrapService scrapService;
   private final ScrapRepository scrapRepository;
 
-  @GetMapping("/list")
+  @GetMapping
   public ResponseEntity<List<ScrapQueryDto>> getScrapList(@AuthenticationPrincipal UserToken userToken) {
     return ResponseEntity.ok(scrapRepository.findScrapListByUserId(userToken.getUserId()));
   }
