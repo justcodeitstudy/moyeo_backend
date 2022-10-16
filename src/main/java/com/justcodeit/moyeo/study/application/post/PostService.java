@@ -14,7 +14,6 @@ import com.justcodeit.moyeo.study.persistence.repository.querydsl.PostCustomRepo
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -32,23 +31,20 @@ public class PostService {
 
     @Transactional
     public Long createPost(PostCreateReqDto postCreateReqDto) {
-        PostMapper postMapper = PostMapper.POST_MAPPER;
+        PostMapper postMapper = PostMapper.INSTANCE;
         Post post = postMapper.createReqDtoToEntity(postCreateReqDto);
+        post.setRecruitmentList(postCreateReqDto.getRecruitmentList());
+        List<PostSkill> postSkills = postCreateReqDto.getSkillIdList()
+                                        .stream()
+                                        .map( skillId ->
+                                                new PostSkill(
+                                                    post,
+                                                    skillRepository.findById(skillId).orElseThrow(SkillCannotFoundException::new)
+                                                )
+                                        )
+                                        .collect(Collectors.toList());
+        post.setPostSkills(postSkills);
         postRepository.save(post);
-
-        postCreateReqDto.getSkillIdList()
-            .stream()
-            .forEach(
-                skillNumber -> postSkillRepository.save(
-                    new PostSkill(post, skillRepository.findById(skillNumber)
-                        .orElseThrow(SkillCannotFoundException::new))
-                )
-            );
-        post.getRecruitmentList()
-            .stream()
-            .map(recruitment -> recruitment.setPost(post))
-            .collect(Collectors.toList());
-        recruitmentRepository.saveAll(post.getRecruitmentList());
 
         return post.getId();
     }
@@ -56,12 +52,12 @@ public class PostService {
     @Transactional(readOnly = true)
     public PostResDto findPost(Long id) {
         Post post = postCustomRepository.findById(id);
-        return PostMapper.POST_MAPPER.entityToDto(post);
+        return PostMapper.INSTANCE.entityToDto(post);
     }
 
     @Transactional(readOnly = true)
     public List<PostResDto> findPostAll(Pageable pageable) {
         List<Post> postList = postCustomRepository.findAll(pageable);
-        return PostMapper.POST_MAPPER.entityListToDtoList(postList);
+        return PostMapper.INSTANCE.entityListToDtoList(postList);
     }
 }
