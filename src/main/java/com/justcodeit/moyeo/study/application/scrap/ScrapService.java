@@ -15,9 +15,9 @@ public class ScrapService {
 
   // TODO : post 가 이미 삭제된 상태에 대한 exception 추가 예정
   @Transactional
-  public Long makeScrap(String userId, Long postId) {
+  public void makeScrap(String userId, Long postId) {
     Scrap scrap = new Scrap(userId, postId);
-    return scrapRepository.save(scrap).getId();
+    scrapRepository.save(scrap);
   }
 
   @Transactional
