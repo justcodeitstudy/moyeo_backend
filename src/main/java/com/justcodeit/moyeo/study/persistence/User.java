@@ -11,7 +11,6 @@ import javax.persistence.Index;
 import javax.persistence.Table;
 
 @Entity
-
 @Table(name = "users", // user가 예약어
     indexes = {
         @Index(columnList = "email"),
@@ -33,11 +32,14 @@ public class User {
   private String providerType;
   private String domesticId; // provider가 가지고 있는 유저 구분값
 
+  private String nickname;
+  private String introduction;
+
   protected User() {
   }
 
   public User(String userId, String email, String picture, Role role, String displayName, String providerType,
-      String domesticId) {
+      String domesticId, String nickname) {
     this.userId = userId;
     this.email = email;
     this.picture = picture;
@@ -45,6 +47,7 @@ public class User {
     this.displayName = displayName;
     this.providerType = providerType;
     this.domesticId = domesticId;
+    this.nickname = nickname;
   }
 
   public User update(String displayName, String picture) {
@@ -74,4 +77,12 @@ public class User {
   }
 
   public String getUserId() { return userId; }
+
+  public String getPicture() { return picture; }
+
+  public String getNickname() { return nickname; }
+
+  public String getIntroduction() { return introduction; }
+
+  public Long getId() { return id; }
 }
