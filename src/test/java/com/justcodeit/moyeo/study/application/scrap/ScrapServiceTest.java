@@ -48,11 +48,7 @@ class ScrapServiceTest {
   @Test
   void makeScrap() throws Exception {
     //given
-    for (int i = 1; i <= 5; i++) {
-      Post post = new Post("This is test" + i, "test" + i);
-      postRepository.save(post);
-      Thread.sleep(10);
-    }
+    createPosts();
 
     //when
     scrapService.makeScrap(user.getUserId(), 3L);
@@ -66,11 +62,7 @@ class ScrapServiceTest {
   @Test
   void deleteScrap() throws Exception {
     //given
-    for (int i = 1; i <= 5; i++) {
-      Post post = new Post("This is test" + i, "test" + i);
-      postRepository.save(post);
-      Thread.sleep(10);
-    }
+    createPosts();
 
     //when
     scrapService.makeScrap(user.getUserId(), 1L);
@@ -83,5 +75,13 @@ class ScrapServiceTest {
     //then
     assertThat(result.size()).isEqualTo(2);
     assertThat(result.stream().map(Scrap::getPostId)).contains(1L, 3L);
+  }
+
+  private void createPosts() throws InterruptedException {
+    for (int i = 1; i <= 5; i++) {
+      Post post = new Post("This is test" + i, "test" + i);
+      postRepository.save(post);
+      Thread.sleep(10);
+    }
   }
 }
