@@ -31,8 +31,9 @@ public class ScrapController {
   }
 
   @PostMapping
-  public ResponseEntity<Long> createScrap(@AuthenticationPrincipal UserToken userToken, @RequestParam String postId) {
-    return ResponseEntity.ok(scrapService.makeScrap(userToken.getUserId(), Long.valueOf(postId)));
+  public ResponseEntity<Void> createScrap(@AuthenticationPrincipal UserToken userToken, @RequestParam String postId) {
+    scrapService.makeScrap(userToken.getUserId(), Long.valueOf(postId));
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 
   @DeleteMapping

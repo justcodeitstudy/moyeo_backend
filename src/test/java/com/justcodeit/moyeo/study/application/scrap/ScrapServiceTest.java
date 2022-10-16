@@ -55,11 +55,10 @@ class ScrapServiceTest {
     }
 
     //when
-    Long scrapId = scrapService.makeScrap(user.getUserId(), 3L);
-    Scrap scrap = scrapRepository.getReferenceById(scrapId);
+    scrapService.makeScrap(user.getUserId(), 3L);
+    Scrap scrap = scrapRepository.getReferenceById(1L);
 
     //then
-    assertThat(scrapId).isNotNull();
     assertThat(scrap).isNotNull();
     assertThat(scrap.getPostId()).isEqualTo(3L);
   }
