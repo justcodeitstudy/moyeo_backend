@@ -48,8 +48,10 @@ public class Post {
     @Enumerated(EnumType.STRING)
     private ProgressType progressType;
     private String contactInfo;
+    @Enumerated(EnumType.STRING)
     private PostStatus postStatus;
     private long viewCount;
+    private String userId;
     @CreatedDate
     private LocalDateTime createDate;
     @LastModifiedDate
@@ -61,7 +63,7 @@ public class Post {
     private List<PostSkill> postSkills = new ArrayList<>(); // 모집 분야
 
     @Builder
-    public Post(Long id, String title, String content, PostType postType, RecruitStatus recruitStatus, ProgressType progressType, List<Recruitment> recruitmentList, List<PostSkill> postSkills, String contactInfo, PostStatus postStatus) {
+    public Post(Long id, String title, String content, PostType postType, RecruitStatus recruitStatus, ProgressType progressType, List<Recruitment> recruitmentList, List<PostSkill> postSkills, String contactInfo, PostStatus postStatus, String userId) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -72,6 +74,7 @@ public class Post {
         this.postSkills = postSkills;
         this.contactInfo = contactInfo;
         this.postStatus = postStatus;
+        this.userId = userId;
     }
 
     private void viewCountIncrease() {

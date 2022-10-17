@@ -1,5 +1,6 @@
 package com.justcodeit.moyeo.study.persistence.repository.querydsl;
 
+import com.justcodeit.moyeo.study.model.post.PostStatus;
 import com.justcodeit.moyeo.study.persistence.Post;
 import com.justcodeit.moyeo.study.persistence.QPost;
 import com.justcodeit.moyeo.study.persistence.QPostSkill;
@@ -41,18 +42,20 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
 
         return jpaQueryFactory.selectFrom(post)
                 .leftJoin(recruitment)
+                    .on(recruitment.post.id.eq(post.id))
                 .leftJoin(postSkill)
-                .where(ltPostId(pageable.getOffset()))
+                    .on(postSkill.post.id.eq(post.id))
+                .where(gtPostId(pageable.getOffset()))
                 .fetchJoin()
                 .limit(pageable.getPageSize())
                 .fetch();
     }
 
-    private BooleanExpression ltPostId(Long postId) {
+    private BooleanExpression gtPostId(Long postId) {
         if(postId == null) {
             return null;
         }
-        return QPost.post.id.lt(postId);
+        return QPost.post.id.gt(postId);
     }
     private BooleanExpression defaultShow() {
         return null;

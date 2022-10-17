@@ -1,10 +1,14 @@
 package com.justcodeit.moyeo.study.interfaces.resource;
 
 import com.justcodeit.moyeo.study.application.post.PostService;
+import com.justcodeit.moyeo.study.interfaces.dto.post.CardResDto;
 import com.justcodeit.moyeo.study.interfaces.dto.post.PostCreateReqDto;
 import com.justcodeit.moyeo.study.interfaces.dto.post.PostResDto;
+import com.justcodeit.moyeo.study.model.jwt.UserToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,7 +36,11 @@ public class PostController {
     }
 
     @GetMapping
-    public List<PostResDto> findPostAll(Pageable pageable) {
-        return postService.findPostAll(pageable);
+    public List<CardResDto> findPostAll(Pageable pageable, @AuthenticationPrincipal UserToken userToken) {
+        String userId = "";
+        if(userToken != null) {
+            userId = userToken.getUserId();
+        }
+        return postService.findPostAll(pageable, userId);
     }
 }
