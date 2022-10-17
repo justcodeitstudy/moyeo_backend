@@ -13,14 +13,12 @@ public class ScrapResponseDto {
   private Long id;
   private String userId;
   private Long postId;
-  private LocalDateTime createdDate;
-  private LocalDateTime lastModifiedDate;
+  private LocalDateTime createdAt;
 
   public ScrapResponseDto(Scrap scrap) {
     id = scrap.getId();
     userId = scrap.getUserId();
     postId = scrap.getPostId();
-    createdDate = scrap.getCreatedDate();
-    lastModifiedDate = scrap.getLastModifiedDate();
+    createdAt = scrap.getCreatedAt();
   }
 }
