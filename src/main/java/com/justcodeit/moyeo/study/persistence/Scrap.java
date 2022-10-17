@@ -3,7 +3,6 @@ package com.justcodeit.moyeo.study.persistence;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.Column;
@@ -29,10 +28,7 @@ public class Scrap {
 
   @CreatedDate
   @Column(updatable = false)
-  private LocalDateTime createdDate;
-
-  @LastModifiedDate
-  private LocalDateTime lastModifiedDate;
+  private LocalDateTime createdAt;
 
   public Scrap(String userId, Long postId) {
     this.userId = userId;
@@ -51,11 +47,7 @@ public class Scrap {
     return postId;
   }
 
-  public LocalDateTime getCreatedDate() {
-    return createdDate;
-  }
-
-  public LocalDateTime getLastModifiedDate() {
-    return lastModifiedDate;
+  public LocalDateTime getCreatedAt() {
+    return createdAt;
   }
 }
