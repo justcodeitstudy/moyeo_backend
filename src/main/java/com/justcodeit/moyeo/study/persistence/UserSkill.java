@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "userskill",
     indexes = {
-        @Index(columnList = "userId")
+        @Index(columnList = "user_id")
     }
 )
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
