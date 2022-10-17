@@ -46,7 +46,8 @@ public class UserController {
     @Parameter(name = "X-MOYEO-AUTH-TOKEN", in = ParameterIn.HEADER, required = true)
     @Secured("ROLE_USER")
     @PatchMapping("/me")
-    public ResponseEntity<Void> editProfile(@AuthenticationPrincipal UserToken userToken,
+    public ResponseEntity<Void> editProfile(
+        @Parameter(hidden = true) @AuthenticationPrincipal UserToken userToken,
         @RequestBody @Valid EditProfileReqDto editProfileReqDto) {
         userService.editProfile(userToken.getUserId(), editProfileReqDto);
         return ResponseEntity.ok(null);
