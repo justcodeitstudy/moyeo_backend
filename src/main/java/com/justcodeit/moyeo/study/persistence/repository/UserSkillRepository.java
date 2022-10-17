@@ -12,7 +12,7 @@ public interface UserSkillRepository extends JpaRepository<UserSkill, Long> {
     @Query("SELECT us.skillId FROM UserSkill us WHERE us.userId = :userId ORDER BY us.id")
     List<Long> findSkillIdsByUserId(@Param("userId") Long userId);
 
-    @Modifying
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("DELETE FROM UserSkill us WHERE us.userId = :userId")
     void deleteByUserId(@Param("userId") Long userId);
 }
