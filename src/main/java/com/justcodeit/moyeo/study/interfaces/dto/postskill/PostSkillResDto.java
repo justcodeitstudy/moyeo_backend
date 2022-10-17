@@ -7,5 +7,5 @@ import lombok.Setter;
 @Setter
 public class PostSkillResDto {
     private Long id;
-    private Long skill_id;
+    private Long skillId;
 }
