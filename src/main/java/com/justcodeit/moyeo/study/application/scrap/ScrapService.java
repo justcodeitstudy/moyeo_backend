@@ -1,11 +1,14 @@
 package com.justcodeit.moyeo.study.application.scrap;
 
 import com.justcodeit.moyeo.study.application.scrap.exception.ScrapCannotFoundException;
+import com.justcodeit.moyeo.study.interfaces.dto.scrap.ScrapQueryDto;
 import com.justcodeit.moyeo.study.persistence.Scrap;
 import com.justcodeit.moyeo.study.persistence.repository.scrap.ScrapRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -15,15 +18,20 @@ public class ScrapService {
 
   // TODO : post 가 이미 삭제된 상태에 대한 exception 추가 예정
   @Transactional
-  public void makeScrap(String userId, Long postId) {
+  public Long makeScrap(String userId, Long postId) {
     Scrap scrap = new Scrap(userId, postId);
-    scrapRepository.save(scrap);
+    return scrapRepository.save(scrap).getId();
   }
 
   @Transactional
   public void deleteScrap(Long scrapId) {
     Scrap scrap = findScrap(scrapId);
     scrapRepository.delete(scrap);
+  }
+
+  @Transactional(readOnly = true)
+  public List<ScrapQueryDto> findScrapListByUser(String userId) {
+    return scrapRepository.findScrapListByUserId(userId);
   }
 
   @Transactional(readOnly = true)

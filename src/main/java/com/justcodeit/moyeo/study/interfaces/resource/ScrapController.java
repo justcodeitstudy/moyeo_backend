@@ -3,7 +3,6 @@ package com.justcodeit.moyeo.study.interfaces.resource;
 import com.justcodeit.moyeo.study.application.scrap.ScrapService;
 import com.justcodeit.moyeo.study.interfaces.dto.scrap.ScrapQueryDto;
 import com.justcodeit.moyeo.study.model.jwt.UserToken;
-import com.justcodeit.moyeo.study.persistence.repository.scrap.ScrapRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +22,10 @@ import java.util.List;
 public class ScrapController {
 
   private final ScrapService scrapService;
-  private final ScrapRepository scrapRepository;
 
   @GetMapping
   public ResponseEntity<List<ScrapQueryDto>> getScrapList(@AuthenticationPrincipal UserToken userToken) {
-    return ResponseEntity.ok(scrapRepository.findScrapListByUserId(userToken.getUserId()));
+    return ResponseEntity.ok(scrapService.findScrapListByUser(userToken.getUserId()));
   }
 
   @PostMapping
