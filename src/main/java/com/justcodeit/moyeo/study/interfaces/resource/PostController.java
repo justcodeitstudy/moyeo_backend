@@ -24,8 +24,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostController {
     private final PostService postService;
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping
-    public PostResDto createPost(@RequestBody @Valid PostCreateReqDto postCreateRequestDto) {
+    public PostResDto createPost(@RequestBody @Valid PostCreateReqDto postCreateRequestDto, @AuthenticationPrincipal UserToken userToken) {
+        postCreateRequestDto.setUserId(userToken.getUserId());
         Long postId = postService.createPost(postCreateRequestDto);
         return postService.findPost(postId);
     }
@@ -43,4 +45,6 @@ public class PostController {
         }
         return postService.findPostAll(pageable, userId);
     }
+
+
 }
