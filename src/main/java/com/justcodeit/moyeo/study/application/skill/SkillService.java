@@ -47,22 +47,19 @@ public class SkillService {
     }
 
     public Boolean skillcreateAllFromS3() {
-        try {
-            List<String> objectFileName = s3Service.getObjectFileName();
+        List<String> objectFileName = s3Service.getObjectFileName();
 
-            for (String fileLocation : objectFileName) {
-                String[] fileFolderAndName = fileLocation.split("/");
-                String folder = fileFolderAndName[0];
-                String name = fileFolderAndName[1].replaceAll(".svg", "");
+        for (String fileLocation : objectFileName) {
+            if(fileLocation.contains("profile")) continue;
+            String[] fileFolderAndName = fileLocation.split("/");
+            String folder = fileFolderAndName[0];
+            String name = fileFolderAndName[1].replaceAll(".svg", "");
 
-                SkillCategory skillCategory = SkillCategoryConverter.getForFolderName(folder);
-                String url = S3_ENDPOINT + skillCategory.getEngWord();
+            SkillCategory skillCategory = SkillCategoryConverter.getForFolderName(folder);
+            String url = S3_ENDPOINT + fileLocation;
 
-                Skill skill = new Skill(skillCategory, folder, name, url);
-                skillRepository.save(skill);
-            }
-        } catch (Exception e) {
-            return Boolean.FALSE;
+            Skill skill = new Skill(skillCategory, folder, name, url);
+            skillRepository.save(skill);
         }
         return Boolean.TRUE;
     }
