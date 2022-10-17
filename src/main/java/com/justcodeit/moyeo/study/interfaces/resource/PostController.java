@@ -4,12 +4,14 @@ import com.justcodeit.moyeo.study.application.post.PostService;
 import com.justcodeit.moyeo.study.interfaces.dto.post.CardResDto;
 import com.justcodeit.moyeo.study.interfaces.dto.post.PostCreateReqDto;
 import com.justcodeit.moyeo.study.interfaces.dto.post.PostResDto;
+import com.justcodeit.moyeo.study.interfaces.dto.post.PostSearchCondition;
 import com.justcodeit.moyeo.study.model.jwt.UserToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,12 +40,12 @@ public class PostController {
     }
 
     @GetMapping
-    public List<CardResDto> findPostAll(Pageable pageable, @AuthenticationPrincipal UserToken userToken) {
+    public List<CardResDto> findPostAll(Pageable pageable, @AuthenticationPrincipal UserToken userToken, @ModelAttribute PostSearchCondition searchCondition) {
         String userId = "";
         if(userToken != null) {
             userId = userToken.getUserId();
         }
-        return postService.findPostAll(pageable, userId);
+        return postService.findPostAll(pageable, userId, searchCondition);
     }
 
 

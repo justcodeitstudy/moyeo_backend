@@ -4,6 +4,7 @@ import com.justcodeit.moyeo.study.application.skill.exception.SkillCannotFoundEx
 import com.justcodeit.moyeo.study.interfaces.dto.post.CardResDto;
 import com.justcodeit.moyeo.study.interfaces.dto.post.PostCreateReqDto;
 import com.justcodeit.moyeo.study.interfaces.dto.post.PostResDto;
+import com.justcodeit.moyeo.study.interfaces.dto.post.PostSearchCondition;
 import com.justcodeit.moyeo.study.interfaces.mapper.PostMapper;
 import com.justcodeit.moyeo.study.persistence.Post;
 import com.justcodeit.moyeo.study.persistence.PostSkill;
@@ -25,10 +26,8 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final PostSkillRepository postSkillRepository;
     private final SkillRepository skillRepository;
     private final PostCustomRepository postCustomRepository;
-    private final RecruitmentRepository recruitmentRepository;
 
     @Transactional
     public Long createPost(PostCreateReqDto postCreateReqDto) {
@@ -57,8 +56,8 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<CardResDto> findPostAll(Pageable pageable, String userId) {
-        List<Post> postList = postCustomRepository.findAll(pageable);
-        return PostMapper.INSTANCE.entityToCardResDto(postList);
+    public List<CardResDto> findPostAll(Pageable pageable, String userId, PostSearchCondition postSearchReqDto) {
+        List<Post> findAllBySearchCondition = postCustomRepository.findAllBySearchCondition(pageable, postSearchReqDto);
+        return PostMapper.INSTANCE.entityToCardResDto(findAllBySearchCondition);
     }
 }
