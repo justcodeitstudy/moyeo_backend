@@ -76,13 +76,28 @@ public class User {
     return domesticId;
   }
 
-  public String getUserId() { return userId; }
+  public String getUserId() {
+    return userId;
+  }
 
-  public String getPicture() { return picture; }
+  public String getPicture() {
+    return picture;
+  }
 
-  public String getNickname() { return nickname; }
+  public String getNickname() {
+    return nickname;
+  }
 
-  public String getIntroduction() { return introduction; }
+  public String getIntroduction() {
+    return introduction;
+  }
 
-  public Long getId() { return id; }
+  public Long getId() {
+    return id;
+  }
+
+  public void editProfile(String nickname, String introduction) {
+    this.nickname = nickname;
+    this.introduction = introduction;
+  }
 }
