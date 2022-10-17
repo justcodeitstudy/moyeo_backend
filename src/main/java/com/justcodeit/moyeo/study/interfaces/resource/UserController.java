@@ -51,6 +51,6 @@ public class UserController {
         @Parameter(hidden = true) @AuthenticationPrincipal UserToken userToken,
         @RequestBody @Valid EditProfileReqDto editProfileReqDto) {
         userService.editProfile(userToken.getUserId(), editProfileReqDto);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 }
