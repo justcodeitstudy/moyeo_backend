@@ -26,8 +26,10 @@ jobs:
           sed -i "s%dbpasswordhere%$DB_PASS%g" src/main/resources/application-staging.yml 
           sed -i "s%jwtsecrethere%$JWT_SECRET%g" src/main/resources/application-staging.yml 
           echo "$OAUTH_CONFIG" > src/main/resources/application-oauth.yml
+          echo "$AWS_CONFIG" > src/main/resources/application-aws.yml
       env:
         OAUTH_CONFIG: ${{secrets.STG_AUTH_CONFIG}}
+        AWS_CONFIG: ${{secrets.STG_AWS_CONFIG}}
         JWT_SECRET: ${{secrets.STG_JWT_SECRET}}
         DB_PASS: ${{secrets.STG_DB_PASSWORD}}
         DB_USER: ${{secrets.STG_DB_USERNAME}}
