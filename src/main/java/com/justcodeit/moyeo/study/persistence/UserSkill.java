@@ -1,12 +1,21 @@
 package com.justcodeit.moyeo.study.persistence;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-
 @Entity
-@Table(name = "userskill")
+@Table(name = "userskill",
+    indexes = {
+        @Index(columnList = "userId")
+    }
+)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserSkill {
     @Id
@@ -22,9 +31,5 @@ public class UserSkill {
     public UserSkill(Long userId, Long skillId) {
         this.userId = userId;
         this.skillId = skillId;
-    }
-
-    public Long getSkillId() {
-        return skillId;
     }
 }
