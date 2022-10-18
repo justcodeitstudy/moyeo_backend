@@ -1,6 +1,6 @@
 package com.justcodeit.moyeo.study.application.scrap;
 
-import com.justcodeit.moyeo.study.interfaces.dto.scrap.ScrapQueryDto;
+import com.justcodeit.moyeo.study.model.scrap.ScrapQueryDto;
 import com.justcodeit.moyeo.study.model.type.Role;
 import com.justcodeit.moyeo.study.persistence.Post;
 import com.justcodeit.moyeo.study.persistence.Scrap;
@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,7 +43,7 @@ class ScrapServiceTest {
 
   @BeforeEach
   void beforeEach() {
-    user = createUser("testUser", "test@gmail.com", Role.USER, "tester", "google");
+    user = createUser("testUser", "test@gmail.com", Role.USER, "tester", "google", null);
     post = createPost("test", "this is test");
   }
 
@@ -92,7 +93,7 @@ class ScrapServiceTest {
     ReflectionTestUtils.setField(scrap, "id", fakeScrapId);
 
     when(scrapRepository.findScrapListByUserId(user.getUserId()))
-            .thenReturn(List.of(new ScrapQueryDto(scrap.getId(), post.getId(), "test")));
+            .thenReturn(List.of(new ScrapQueryDto(scrap.getId(), post.getId(), "test", LocalDateTime.now(), 0L)));
 
     //when
     List<ScrapQueryDto> result = scrapService.findScrapListByUser(user.getUserId());
@@ -103,12 +104,15 @@ class ScrapServiceTest {
     assertThat(result).extracting("title").contains("test");
   }
 
-  private User createUser(String userId, String email, Role role, String displayName, String providerType) {
-    return new User(userId, email, null, role, displayName, providerType, null);
+  private User createUser(String userId, String email, Role role, String displayName, String providerType, String nickname) {
+    return new User(userId, email, null, role, displayName, providerType, null, nickname);
   }
 
-  private Post createPost(String title, String content) {
-    return new Post(title, content);
+  private Post createPost(String title, String userId) {
+    return Post.builder()
+            .title(title)
+            .userId(userId)
+            .build();
   }
 
   private Scrap createScrap(String userId, Long postId) {
