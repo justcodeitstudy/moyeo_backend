@@ -1,8 +1,13 @@
 package com.justcodeit.moyeo.study.application.scrap;
 
+import com.justcodeit.moyeo.study.application.post.exception.PostCannotFoundException;
+import com.justcodeit.moyeo.study.application.scrap.exception.PostAlreadyDeletedException;
 import com.justcodeit.moyeo.study.application.scrap.exception.ScrapCannotFoundException;
-import com.justcodeit.moyeo.study.interfaces.dto.scrap.ScrapQueryDto;
+import com.justcodeit.moyeo.study.model.scrap.ScrapQueryDto;
+import com.justcodeit.moyeo.study.model.post.PostStatus;
+import com.justcodeit.moyeo.study.persistence.Post;
 import com.justcodeit.moyeo.study.persistence.Scrap;
+import com.justcodeit.moyeo.study.persistence.repository.PostRepository;
 import com.justcodeit.moyeo.study.persistence.repository.scrap.ScrapRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,17 +20,30 @@ import java.util.List;
 public class ScrapService {
 
   private final ScrapRepository scrapRepository;
+  private final PostRepository postRepository;
 
-  // TODO : post 가 이미 삭제된 상태에 대한 exception 추가 예정
   @Transactional
   public Long makeScrap(String userId, Long postId) {
-    Scrap scrap = new Scrap(userId, postId);
+    Post post = postRepository.findById(postId)
+            .orElseThrow(PostCannotFoundException::new);
+
+    if (post.getPostStatus() == PostStatus.DELETE) {
+      throw new PostAlreadyDeletedException();
+    }
+    Scrap scrap = new Scrap(userId, post.getId());
+
     return scrapRepository.save(scrap).getId();
   }
 
   @Transactional
   public void deleteScrap(Long scrapId) {
     Scrap scrap = findScrap(scrapId);
+    Post post = postRepository.findById(scrap.getPostId())
+            .orElseThrow(PostCannotFoundException::new);
+
+    if (post.getPostStatus() == PostStatus.DELETE) {
+      throw new PostAlreadyDeletedException();
+    }
     scrapRepository.delete(scrap);
   }
 
