@@ -1,7 +1,7 @@
 package com.justcodeit.moyeo.study.interfaces.resource;
 
 import com.justcodeit.moyeo.study.application.scrap.ScrapService;
-import com.justcodeit.moyeo.study.interfaces.dto.scrap.ScrapQueryDto;
+import com.justcodeit.moyeo.study.model.scrap.ScrapQueryDto;
 import com.justcodeit.moyeo.study.model.jwt.UserToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

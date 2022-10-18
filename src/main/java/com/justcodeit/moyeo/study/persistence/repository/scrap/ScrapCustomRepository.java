@@ -1,6 +1,6 @@
 package com.justcodeit.moyeo.study.persistence.repository.scrap;
 
-import com.justcodeit.moyeo.study.interfaces.dto.scrap.ScrapQueryDto;
+import com.justcodeit.moyeo.study.model.scrap.ScrapQueryDto;
 
 import java.util.List;
 
