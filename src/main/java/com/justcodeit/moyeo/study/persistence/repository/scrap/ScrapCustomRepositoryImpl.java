@@ -37,7 +37,7 @@ public class ScrapCustomRepositoryImpl implements ScrapCustomRepository {
             ))
             .from(scrap)
             .join(post).on(scrap.postId.eq(post.id))
-            .where(scrap.userId.eq(userId), post.id.isNotNull())
+            .where(scrap.userId.eq(userId))
             .orderBy(scrap.createdAt.desc())
             .fetch();
 
