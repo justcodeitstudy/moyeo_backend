@@ -1,14 +1,15 @@
 package com.justcodeit.moyeo.study.persistence.repository.scrap;
 
-import static com.justcodeit.moyeo.study.persistence.QPost.post;
-import static com.justcodeit.moyeo.study.persistence.QScrap.scrap;
-
 import com.justcodeit.moyeo.study.interfaces.dto.scrap.QScrapQueryDto;
 import com.justcodeit.moyeo.study.interfaces.dto.scrap.ScrapQueryDto;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+import static com.justcodeit.moyeo.study.persistence.QPost.*;
+import static com.justcodeit.moyeo.study.persistence.QScrap.*;
 
 @Repository
 @RequiredArgsConstructor
@@ -29,6 +30,6 @@ public class ScrapCustomRepositoryImpl implements ScrapCustomRepository {
         .join(post).on(scrap.postId.eq(post.id))
         .where(scrap.userId.eq(userId))
         .orderBy(scrap.createdAt.desc())
-            .fetch();
+        .fetch();
   }
 }
