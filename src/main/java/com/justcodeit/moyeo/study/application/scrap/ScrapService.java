@@ -54,7 +54,7 @@ public class ScrapService {
             .orElseThrow(() -> new ScrapCannotFoundException(String.format("해당 스크랩을 찾을 수 없습니다 : %s", scrapId)));
   }
 
-  private static void isPostDeleted(Post post) {
+  private void isPostDeleted(Post post) {
     if (post.getPostStatus() == PostStatus.DELETE) {
       throw new PostAlreadyDeletedException();
     }
