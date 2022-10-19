@@ -9,6 +9,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -59,16 +60,24 @@ public class ScrapCustomRepositoryImpl implements ScrapCustomRepository {
             .where(
                     post.id.in(postIds),
                     skill.orderNum.in(
-                            JPAExpressions.select(skill.orderNum)
+                            JPAExpressions
+                                    .select(skill.orderNum)
                                     .from(skill)
-                                    .orderBy(skill.orderNum.asc().nullsLast())
-                                    .limit(3)
+                                    .orderBy(skill.orderNum.asc())
                     )
             )
             .fetch();
 
     Map<Long, List<PostSkillQueryDto>> postSkillDtoListMap = postSkillDtoList.stream()
             .collect(Collectors.groupingBy(PostSkillQueryDto::getPostId));
+
+    postSkillDtoListMap.forEach((postId, dtos) -> {
+        if (dtos.size() > 3) {
+            List<PostSkillQueryDto> subDtos = new ArrayList<>(dtos.subList(0, 3));
+            postSkillDtoListMap.put(postId, subDtos);
+        }
+    });
+
     scrapDtoList.forEach(scrapQueryDto -> scrapQueryDto.setPostSkills(postSkillDtoListMap.get(scrapQueryDto.getPostId())));
 
     return scrapDtoList;
