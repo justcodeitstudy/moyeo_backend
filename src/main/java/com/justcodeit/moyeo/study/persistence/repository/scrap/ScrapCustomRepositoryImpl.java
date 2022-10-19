@@ -4,6 +4,7 @@ import com.justcodeit.moyeo.study.model.scrap.PostSkillQueryDto;
 import com.justcodeit.moyeo.study.interfaces.dto.postskill.QPostSkillQueryDto;
 import com.justcodeit.moyeo.study.interfaces.dto.scrap.QScrapQueryDto;
 import com.justcodeit.moyeo.study.model.scrap.ScrapQueryDto;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -55,7 +56,15 @@ public class ScrapCustomRepositoryImpl implements ScrapCustomRepository {
             .from(postSkill)
             .join(postSkill.post, post)
             .join(postSkill.skill, skill)
-            .where(post.id.in(postIds))
+            .where(
+                    post.id.in(postIds),
+                    skill.orderNum.in(
+                            JPAExpressions.select(skill.orderNum)
+                                    .from(skill)
+                                    .orderBy(skill.orderNum.asc().nullsLast())
+                                    .limit(3)
+                    )
+            )
             .fetch();
 
     Map<Long, List<PostSkillQueryDto>> postSkillDtoListMap = postSkillDtoList.stream()

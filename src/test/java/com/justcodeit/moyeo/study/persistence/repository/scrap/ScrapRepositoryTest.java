@@ -18,6 +18,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -56,14 +57,19 @@ class ScrapRepositoryTest {
   }
 
   @Test
+  @Commit
   void findScrapListByUserId() throws Exception {
     //given
-    Skill skill1 = new Skill(SkillCategory.FRONT_END, null, "front", null);
-    Skill skill2 = new Skill(SkillCategory.BACK_END, null, "back", null);
-    Skill skill3 = new Skill(SkillCategory.DESIGN, null, "design", null);
+    Skill skill1 = createSkill(SkillCategory.FRONT_END, "front", 1);
+    Skill skill2 = createSkill(SkillCategory.BACK_END, "back", 2);
+    Skill skill3 = createSkill(SkillCategory.DESIGN, "design", null);
+    Skill skill4 = createSkill(SkillCategory.DEVOPS, "devops", 3);
+    Skill skill5 = createSkill(SkillCategory.CO_WORKING_TOOL, "co-work", null);
     skillRepository.save(skill1);
     skillRepository.save(skill2);
     skillRepository.save(skill3);
+    skillRepository.save(skill4);
+    skillRepository.save(skill5);
 
     for (int i = 1; i <= 5; i++) {
       Post post = createPost("This is test " + i, user.getUserId());
@@ -72,11 +78,15 @@ class ScrapRepositoryTest {
       PostSkill postSkill1 = new PostSkill(post, skill1);
       PostSkill postSkill2 = new PostSkill(post, skill2);
       PostSkill postSkill3 = new PostSkill(post, skill3);
+      PostSkill postSkill4 = new PostSkill(post, skill4);
+      PostSkill postSkill5 = new PostSkill(post, skill5);
 
       List<PostSkill> postSkills = new ArrayList<>() {{
         add(postSkill1);
         add(postSkill2);
         add(postSkill3);
+        add(postSkill4);
+        add(postSkill5);
       }};
 
       postSkillRepository.saveAll(postSkills);
@@ -93,13 +103,21 @@ class ScrapRepositoryTest {
     assertThat(result).isNotEmpty();
     assertThat(result.size()).isEqualTo(5);
     assertThat(result).extracting("postId").containsExactly(5L, 4L, 3L, 2L, 1L); // 시간 역순
-    assertThat(result.get(0).getPostSkills()).extracting("name").containsExactly("front", "back", "design");
+    assertThat(result.get(0).getPostSkills().size()).isEqualTo(3);
   }
 
   private Post createPost(String title, String userId) {
     return Post.builder()
             .title(title)
             .userId(userId)
+            .build();
+  }
+
+  private Skill createSkill(SkillCategory category, String name, Integer orderNum) {
+    return Skill.builder()
+            .category(category)
+            .name(name)
+            .orderNum(orderNum)
             .build();
   }
 }
