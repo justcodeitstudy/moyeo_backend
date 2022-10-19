@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.justcodeit.moyeo.study.application.skill.exception.SkillCannotFoundException;
@@ -44,14 +43,19 @@ class UserServiceTest {
 
     @Test
     void accessProfile_userId_invalid_throw_exception() {
-        when(userRepository.findByUserId(anyString())).thenThrow(UserCannotFoundException.class);
+        setInvalidUser();
         assertThrows(UserCannotFoundException.class, () -> userService.accessProfile("invalidId"));
+    }
+
+    private void setInvalidUser() {
+        when(userRepository.findByUserId(anyString())).thenReturn(Optional.ofNullable(null));
     }
 
     @Test
     void accessProfile_userId_valid_return_dto() {
-        setFindByUserResult();
-        when(userSkillRepository.findSkillIdsByUserId(any())).thenReturn(List.of(1L, 2L));
+        setValidUser();
+        when(userSkillRepository.findByUserId(any())).thenReturn(
+            List.of(new UserSkill(1L, 1L), new UserSkill(1L, 2L)));
 
         var result = userService.accessProfile("validUserId");
 
@@ -64,23 +68,21 @@ class UserServiceTest {
 
     @Test
     void editProfile_userId_invalid_throw_exception() {
-        when(userRepository.findByUserId(anyString())).thenThrow(UserCannotFoundException.class);
+        setInvalidUser();
         assertThrows(UserCannotFoundException.class,
             () -> userService.editProfile("invalidId", new EditProfileReqDto()));
     }
 
     @Test
     void editProfile_skillIds_invalid_throw_exception() {
-        setFindByUserResult();
-        when(skillRepository.getCountByIds(any())).thenReturn(2L);
-        var mockDto = mock(EditProfileReqDto.class);
-        when(mockDto.getSkillIds()).thenReturn(List.of(1L, 2L, 3L));
-
+        setValidUser();
+        when(skillRepository.countByIdIn(any())).thenReturn(2L);
+        var dto = new EditProfileReqDto("nickname", "introduction", List.of(1L, 2L, 3L));
         assertThrows(SkillCannotFoundException.class,
-            () -> userService.editProfile("validUserId", mockDto));
+            () -> userService.editProfile("validUserId", dto));
     }
 
-    private void setFindByUserResult() {
+    private void setValidUser() {
         when(userRepository.findByUserId(anyString())).thenAnswer((e) -> {
             testUser = new User((String) e.getArgument(0), "email", "picture", Role.USER, "display",
                 "provider", "domesticId", "nickname");
@@ -90,16 +92,16 @@ class UserServiceTest {
 
     @Test
     void editProfile_skillIds_valid_success() {
-        setFindByUserResult();
+        setValidUser();
         var skillIds = List.of(1L, 2L, 3L);
         var userSkills = skillIds.stream().map(skillId -> new UserSkill(1L, skillId)).collect(
             Collectors.toList());
-        when(skillRepository.getCountByIds(any())).thenReturn(Long.valueOf(skillIds.size()));
-        var mockDto = mock(EditProfileReqDto.class);
-        when(mockDto.getSkillIds()).thenReturn(skillIds);
+        when(skillRepository.countByIdIn(any())).thenReturn(Long.valueOf(skillIds.size()));
+
+        var dto = new EditProfileReqDto("nickname", "introduction", skillIds);
         doNothing().when(userSkillRepository).deleteByUserId(any());
         when(userSkillRepository.saveAll(any())).thenReturn(userSkills);
 
-        userService.editProfile("validUserId", mockDto);
+        userService.editProfile("validUserId", dto);
     }
 }

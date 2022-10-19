@@ -41,8 +41,10 @@ public class UserService {
             .orElseThrow(UserCannotFoundException::new);
     }
 
-    private List<Long> getSkillIds(Long id) {
-        return userSkillRepository.findSkillIdsByUserId(id);
+    private List<Long> getSkillIds(Long userId) {
+        return userSkillRepository.findByUserId(userId)
+            .stream().map(userSkill -> userSkill.getSkillId())
+            .collect(Collectors.toList());
     }
 
     @Transactional
@@ -57,7 +59,7 @@ public class UserService {
     }
 
     private void checkSkillIds(List<Long> skillIds) {
-        if (skillIds.size() != skillRepository.getCountByIds(skillIds)) {
+        if (skillIds.size() != skillRepository.countByIdIn(skillIds)) {
             throw new SkillCannotFoundException();
         }
     }
