@@ -27,9 +27,7 @@ public class ScrapService {
     Post post = postRepository.findById(postId)
             .orElseThrow(PostCannotFoundException::new);
 
-    if (post.getPostStatus() == PostStatus.DELETE) {
-      throw new PostAlreadyDeletedException();
-    }
+    isPostDeleted(post);
     Scrap scrap = new Scrap(userId, post.getId());
 
     return scrapRepository.save(scrap).getId();
@@ -41,9 +39,7 @@ public class ScrapService {
     Post post = postRepository.findById(scrap.getPostId())
             .orElseThrow(PostCannotFoundException::new);
 
-    if (post.getPostStatus() == PostStatus.DELETE) {
-      throw new PostAlreadyDeletedException();
-    }
+    isPostDeleted(post);
     scrapRepository.delete(scrap);
   }
 
@@ -56,5 +52,11 @@ public class ScrapService {
   private Scrap findScrap(Long scrapId) {
     return scrapRepository.findById(scrapId)
             .orElseThrow(() -> new ScrapCannotFoundException(String.format("해당 스크랩을 찾을 수 없습니다 : %s", scrapId)));
+  }
+
+  private static void isPostDeleted(Post post) {
+    if (post.getPostStatus() == PostStatus.DELETE) {
+      throw new PostAlreadyDeletedException();
+    }
   }
 }
