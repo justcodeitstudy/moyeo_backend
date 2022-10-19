@@ -30,10 +30,10 @@ class EditProfileReqDtoTest {
     }
 
     @Test
-    void skillId_empty_invalid() {
+    void skillId_empty_valid() {
         dto = new EditProfileReqDto("nickname", null, List.of());
         var validate = validator.validate(dto);
-        assertThat(validate).isNotEmpty();
+        assertThat(validate).isEmpty();
     }
 
     @Test
