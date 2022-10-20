@@ -9,8 +9,6 @@ import com.justcodeit.moyeo.study.interfaces.mapper.PostMapper;
 import com.justcodeit.moyeo.study.persistence.Post;
 import com.justcodeit.moyeo.study.persistence.PostSkill;
 import com.justcodeit.moyeo.study.persistence.repository.PostRepository;
-import com.justcodeit.moyeo.study.persistence.repository.PostSkillRepository;
-import com.justcodeit.moyeo.study.persistence.repository.RecruitmentRepository;
 import com.justcodeit.moyeo.study.persistence.repository.SkillRepository;
 import com.justcodeit.moyeo.study.persistence.repository.querydsl.PostCustomRepository;
 import lombok.RequiredArgsConstructor;
@@ -58,6 +56,6 @@ public class PostService {
     @Transactional(readOnly = true)
     public List<CardResDto> findPostAll(Pageable pageable, String userId, PostSearchCondition postSearchReqDto) {
         List<Post> findAllBySearchCondition = postCustomRepository.findAllBySearchCondition(pageable, postSearchReqDto);
-        return PostMapper.INSTANCE.entityToCardResDto(findAllBySearchCondition);
+        return PostMapper.INSTANCE.entityListToCardResDtoList(findAllBySearchCondition);
     }
 }
