@@ -1,4 +1,4 @@
-package com.justcodeit.moyeo.study.model.scrap;
+package com.justcodeit.moyeo.study.model.inquiry;
 
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
