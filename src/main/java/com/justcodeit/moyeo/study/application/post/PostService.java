@@ -5,6 +5,7 @@ import com.justcodeit.moyeo.study.interfaces.dto.post.CardResDto;
 import com.justcodeit.moyeo.study.interfaces.dto.post.PostCreateReqDto;
 import com.justcodeit.moyeo.study.interfaces.dto.post.PostResDto;
 import com.justcodeit.moyeo.study.interfaces.mapper.PostMapper;
+import com.justcodeit.moyeo.study.model.inquiry.PostQueryDto;
 import com.justcodeit.moyeo.study.persistence.Post;
 import com.justcodeit.moyeo.study.persistence.PostSkill;
 import com.justcodeit.moyeo.study.persistence.repository.PostRepository;
@@ -60,5 +61,10 @@ public class PostService {
     public List<CardResDto> findPostAll(Pageable pageable, String userId) {
         List<Post> postList = postCustomRepository.findAll(pageable);
         return PostMapper.INSTANCE.entityToCardResDto(postList);
+    }
+
+    @Transactional(readOnly = true)
+    public List<PostQueryDto> findPostListByUser(String userId) {
+        return postCustomRepository.findPostListByUserId(userId);
     }
 }

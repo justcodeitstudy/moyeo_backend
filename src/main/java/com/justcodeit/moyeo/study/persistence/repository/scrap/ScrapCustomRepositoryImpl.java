@@ -1,9 +1,9 @@
 package com.justcodeit.moyeo.study.persistence.repository.scrap;
 
-import com.justcodeit.moyeo.study.model.scrap.PostSkillQueryDto;
-import com.justcodeit.moyeo.study.interfaces.dto.postskill.QPostSkillQueryDto;
-import com.justcodeit.moyeo.study.interfaces.dto.scrap.QScrapQueryDto;
-import com.justcodeit.moyeo.study.model.scrap.ScrapQueryDto;
+import com.justcodeit.moyeo.study.model.inquiry.QScrapQueryDto;
+import com.justcodeit.moyeo.study.model.inquiry.ScrapQueryDto;
+import com.justcodeit.moyeo.study.model.inquiry.PostSkillQueryDto;
+import com.justcodeit.moyeo.study.model.inquiry.QPostSkillQueryDto;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
