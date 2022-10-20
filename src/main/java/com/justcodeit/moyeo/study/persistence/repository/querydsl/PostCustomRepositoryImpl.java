@@ -44,12 +44,11 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
 
     @Override
     public List<Post> findAllBySearchCondition(Pageable pageable, PostSearchCondition searchCondition) {
-
         return jpaQueryFactory.selectFrom(post)
-                .innerJoin(recruitment)
-                .on(recruitment.post.id.eq(post.id))
+                .leftJoin(recruitment)
+                    .on(recruitment.post.id.eq(post.id))
                 .leftJoin(postSkill)
-                .on(postSkill.post.id.eq(post.id))
+                    .on(postSkill.post.id.eq(post.id))
                 .where(gtPostId(pageable.getOffset())
                         .and(createSearchCondition(searchCondition)))
                 .limit(pageable.getPageSize())
@@ -76,7 +75,7 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
             RecruitStatus recruitStatus = postSearchReqDto.getRecruitStatus();
             expression = expression.and(post.recruitStatus.eq(recruitStatus));
         }
-        if(postSearchReqDto.getSkillList() != null || postSearchReqDto.getSkillList().size() != 0) {
+        if(postSearchReqDto.getSkillList() != null && postSearchReqDto.getSkillList().size() != 0) {
             List<Long> skillList = postSearchReqDto.getSkillList();
             expression = expression.andAnyOf(postSkill.skill.id.in(skillList));
         }
