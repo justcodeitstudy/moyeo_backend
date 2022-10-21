@@ -1,7 +1,7 @@
 package com.justcodeit.moyeo.study.persistence.repository.scrap;
 
 import com.justcodeit.moyeo.study.common.RandomIdUtil;
-import com.justcodeit.moyeo.study.model.scrap.ScrapQueryDto;
+import com.justcodeit.moyeo.study.model.inquiry.ScrapQueryDto;
 import com.justcodeit.moyeo.study.model.type.Role;
 import com.justcodeit.moyeo.study.model.type.SkillCategory;
 import com.justcodeit.moyeo.study.persistence.Post;

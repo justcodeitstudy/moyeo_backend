@@ -1,6 +1,6 @@
 package com.justcodeit.moyeo.study.application.scrap;
 
-import com.justcodeit.moyeo.study.model.scrap.ScrapQueryDto;
+import com.justcodeit.moyeo.study.model.inquiry.ScrapQueryDto;
 import com.justcodeit.moyeo.study.model.type.Role;
 import com.justcodeit.moyeo.study.persistence.Post;
 import com.justcodeit.moyeo.study.persistence.Scrap;
@@ -78,7 +78,7 @@ class ScrapServiceTest {
     when(scrapRepository.findById(fakeScrapId)).thenReturn(Optional.of(scrap));
 
     //when
-    scrapService.deleteScrap(scrap.getId());
+    scrapService.deleteScrap(user.getUserId(), scrap.getId());
     List<Scrap> result = scrapRepository.findAll();
 
     //then
