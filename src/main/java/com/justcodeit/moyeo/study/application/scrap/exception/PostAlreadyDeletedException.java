@@ -8,4 +8,8 @@ public class PostAlreadyDeletedException extends MoyeoException {
   public PostAlreadyDeletedException() {
     super(ErrorCode.POST_ALREADY_DELETED);
   }
+
+  public PostAlreadyDeletedException(String message) {
+    super(message, ErrorCode.POST_ALREADY_DELETED);
+  }
 }

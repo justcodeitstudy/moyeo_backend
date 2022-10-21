@@ -16,9 +16,10 @@ public enum ErrorCode {
 
   NOT_FOUND_USER(404, "U001", "No such User"),
   NOT_FOUND_POST(404, "P001", "No such Post"),
-  POST_ALREADY_DELETED(404, "P002", "Post Already Deleted"),
+  POST_ALREADY_DELETED(204, "P002", "Post Already Deleted"),
   NOT_FOUND_SKILL(404, "S001", "No such Skill"),
   NOT_FOUND_SCRAP(404, "R001", "No such Scrap"),
+  SCRAP_NOT_AUTHORIZED(400, "R002", "Not Authorized on Scrap"),
 
   JWT_DECODE_FAILURE(500, "J001", "JWT cannot be decoded"),
   JWT_ENCODE_FAILURE(500, "J002", "DTO encode failure"),
