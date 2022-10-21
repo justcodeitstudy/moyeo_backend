@@ -90,4 +90,7 @@ public class Post {
     public void setPostSkills(List<PostSkill> postSkills) {
         this.postSkills = postSkills;
     }
+    public void changeRecruitStatus(RecruitStatus recruitStatus) {
+        this.recruitStatus = recruitStatus;
+    }
 }

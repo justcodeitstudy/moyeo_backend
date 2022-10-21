@@ -30,7 +30,7 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
     QPostSkill postSkill = QPostSkill.postSkill;
 
     @Override
-    public Post findById(Long id) {
+    public Post findByIdCustom(Long id) {
 
         return jpaQueryFactory.selectFrom(post)
                 .leftJoin(recruitment)
@@ -56,6 +56,16 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
                 .fetchJoin()
                 .distinct()
                 .fetch();
+    }
+
+    @Override
+    public Post findByIdAndUserIdAndPostStatusNormal(Long id, String userId, PostStatus postStatus) {
+        return jpaQueryFactory.selectFrom(post)
+                .where( post.id.eq(id)
+                        .and(post.userId.eq(userId))
+                        .and(post.postStatus.eq(postStatus))
+                )
+                .fetchOne();
     }
 
     private BooleanExpression gtPostId(Long postId) {
@@ -85,14 +95,12 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
     private List<OrderSpecifier> postSort(Sort sort) {
         List<OrderSpecifier> ORDERS = new ArrayList<>();
         if (!sort.isEmpty()) {
-            for (Sort.Order order : sort) {
-                Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
-                switch (order.getProperty()){
-                    case "id":
-                        ORDERS.add(new OrderSpecifier(direction, post.id));
-                    default:
-                        break;
-                }
+            return ORDERS;
+        }
+        for (Sort.Order order : sort) {
+            Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
+            if(order.getProperty().equals("id")) {
+                ORDERS.add(new OrderSpecifier(direction, post.id));
             }
         }
         return ORDERS;
