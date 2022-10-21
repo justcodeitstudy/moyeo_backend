@@ -3,7 +3,7 @@ package com.justcodeit.moyeo.study.application.user;
 import com.justcodeit.moyeo.study.application.skill.exception.SkillCannotFoundException;
 import com.justcodeit.moyeo.study.application.user.exception.UserCannotFoundException;
 import com.justcodeit.moyeo.study.interfaces.dto.user.EditProfileReqDto;
-import com.justcodeit.moyeo.study.interfaces.dto.user.GetUserResDto;
+import com.justcodeit.moyeo.study.interfaces.dto.user.ProfileInfo;
 import com.justcodeit.moyeo.study.persistence.User;
 import com.justcodeit.moyeo.study.persistence.UserSkill;
 import com.justcodeit.moyeo.study.persistence.repository.SkillRepository;
@@ -24,10 +24,10 @@ public class UserService {
     private final SkillRepository skillRepository;
 
     @Transactional(readOnly = true)
-    public GetUserResDto accessProfile(String userId) {
+    public ProfileInfo accessProfile(String userId) {
         var user = getUser(userId);
         var skillIds = getSkillIds(user.getId());
-        return new GetUserResDto(
+        return new ProfileInfo(
             user.getEmail(),
             user.getPicture(),
             user.getNickname(),
