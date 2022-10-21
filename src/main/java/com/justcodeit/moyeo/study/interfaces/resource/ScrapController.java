@@ -26,8 +26,8 @@ public class ScrapController {
   }
 
   @DeleteMapping
-  public ResponseEntity<Void> deleteScrap(@RequestParam String scrapId) {
-    scrapService.deleteScrap(Long.valueOf(scrapId));
+  public ResponseEntity<Void> deleteScrap(@AuthenticationPrincipal UserToken userToken, @RequestParam String scrapId) {
+    scrapService.deleteScrap(userToken.getUserId(), Long.valueOf(scrapId));
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 }
