@@ -84,11 +84,8 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
         }
         for (Sort.Order order : sort) {
             Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
-            switch (order.getProperty()){
-                case "id":
-                    ORDERS.add(new OrderSpecifier(direction, post.id));
-                default:
-                    break;
+            if(order.getProperty().equals("id")) {
+                ORDERS.add(new OrderSpecifier(direction, post.id));
             }
         }
         return ORDERS;
