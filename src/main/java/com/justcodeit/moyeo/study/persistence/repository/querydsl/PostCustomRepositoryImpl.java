@@ -79,15 +79,16 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
 
     private List<OrderSpecifier> postSort(Sort sort) {
         List<OrderSpecifier> ORDERS = new ArrayList<>();
-        if (!sort.isEmpty()) {
-            for (Sort.Order order : sort) {
-                Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
-                switch (order.getProperty()){
-                    case "id":
-                        ORDERS.add(new OrderSpecifier(direction, post.id));
-                    default:
-                        break;
-                }
+        if (sort.isEmpty()) {
+            return ORDERS;
+        }
+        for (Sort.Order order : sort) {
+            Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
+            switch (order.getProperty()){
+                case "id":
+                    ORDERS.add(new OrderSpecifier(direction, post.id));
+                default:
+                    break;
             }
         }
         return ORDERS;
