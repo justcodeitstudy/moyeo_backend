@@ -8,9 +8,8 @@ import lombok.Setter;
 @Getter
 public class SkillDto {
     private Long id;
-    private SkillCategory skillCategory;
+    private SkillCategory category;
     private String name;
     private String imageUrl;
-    private String folderName;
     private Integer orderNum;
 }
