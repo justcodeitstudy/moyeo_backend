@@ -20,6 +20,7 @@ public enum ErrorCode {
   NOT_FOUND_SKILL(404, "S001", "No such Skill"),
   NOT_FOUND_SCRAP(404, "R001", "No such Scrap"),
   SCRAP_NOT_AUTHORIZED(400, "R002", "Not Authorized on Scrap"),
+  POST_ALREADY_SCRAPPED(400, "R003", "Post Already Scrapped"),
 
   JWT_DECODE_FAILURE(500, "J001", "JWT cannot be decoded"),
   JWT_ENCODE_FAILURE(500, "J002", "DTO encode failure"),

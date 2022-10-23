@@ -15,14 +15,16 @@ public class PostQueryDto {
   private String title;
   private LocalDateTime createDate;
   private Long viewCount;
+  private Boolean isScrapped;
   private List<PostSkillQueryDto> postSkills;
 
   @QueryProjection
-  public PostQueryDto(Long postId, String title, LocalDateTime createDate, Long viewCount) {
+  public PostQueryDto(Long postId, String title, LocalDateTime createDate, Long viewCount, Boolean isScrapped) {
     this.postId = postId;
     this.title = title;
     this.createDate = createDate;
     this.viewCount = viewCount;
+    this.isScrapped = isScrapped;
   }
 
   public void setPostSkills(List<PostSkillQueryDto> postSkills) {

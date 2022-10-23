@@ -2,6 +2,7 @@ package com.justcodeit.moyeo.study.application.scrap;
 
 import com.justcodeit.moyeo.study.application.post.exception.PostCannotFoundException;
 import com.justcodeit.moyeo.study.application.scrap.exception.PostAlreadyDeletedException;
+import com.justcodeit.moyeo.study.application.scrap.exception.PostAlreadyScrappedException;
 import com.justcodeit.moyeo.study.application.scrap.exception.ScrapCannotFoundException;
 import com.justcodeit.moyeo.study.application.scrap.exception.ScrapNotAuthorizedException;
 import com.justcodeit.moyeo.study.model.inquiry.ScrapQueryDto;
@@ -28,18 +29,23 @@ public class ScrapService {
     Post post = postRepository.findById(postId)
             .orElseThrow(PostCannotFoundException::new);
 
-    // TODO : http 상태코드? postStatus abnormal?
-    if (post.getPostStatus() == PostStatus.DELETE) {
+    if (post.getPostStatus() != PostStatus.NORMAL) {
       throw new PostAlreadyDeletedException("이미 삭제된 모집글입니다");
     }
-    Scrap scrap = new Scrap(userId, post.getId());
 
+    if (scrapRepository.findByUserIdAndPostId(userId, post.getId()).isPresent()) {
+      throw new PostAlreadyScrappedException("이미 스크랩이 완료된 모집글입니다");
+    }
+    Scrap scrap = new Scrap(userId, post.getId());
     return scrapRepository.save(scrap).getId();
   }
 
   @Transactional
-  public void deleteScrap(String userId, Long scrapId) {
-    Scrap scrap = findScrap(scrapId);
+  public void deleteScrap(String userId, Long postId) {
+    Post post = postRepository.findById(postId)
+            .orElseThrow(PostCannotFoundException::new);
+    Scrap scrap = scrapRepository.findByUserIdAndPostId(userId, post.getId())
+            .orElseThrow(ScrapCannotFoundException::new);
 
     if (!scrap.getUserId().equals(userId)) {
       throw new ScrapNotAuthorizedException();
