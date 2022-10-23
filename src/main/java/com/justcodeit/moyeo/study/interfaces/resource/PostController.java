@@ -29,8 +29,7 @@ public class PostController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping
     public PostResDto createPost(@RequestBody @Valid PostCreateReqDto postCreateRequestDto, @AuthenticationPrincipal UserToken userToken) {
-        postCreateRequestDto.setUserId(userToken.getUserId());
-        Long postId = postService.createPost(postCreateRequestDto);
+        Long postId = postService.createPost(postCreateRequestDto, userToken.getUserId());
         return postService.findPost(postId);
     }
 
