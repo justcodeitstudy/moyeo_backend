@@ -70,8 +70,8 @@ public class PostService {
     }
 
     private void isWriter(Long postId, String userId) {
-        Post userNormalPost = postCustomRepository.findByIdAndUserIdAndPostStatusNormal(postId, userId, PostStatus.NORMAL);
-        if(userNormalPost == null) {
+        boolean isUserPostExist = postCustomRepository.existByIdAndUserIdAndPostStatusNormal(postId, userId, PostStatus.NORMAL);
+        if(!isUserPostExist) {
             throw new AccessDeniedException("User is Not Writer");
         }
     }

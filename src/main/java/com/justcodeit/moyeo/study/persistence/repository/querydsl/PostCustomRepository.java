@@ -10,5 +10,5 @@ import java.util.List;
 public interface PostCustomRepository {
     Post findByIdCustom(Long id);
     List<Post> findAllBySearchCondition(Pageable pageable, PostSearchCondition searchCondition);
-    Post findByIdAndUserIdAndPostStatusNormal(Long id, String userId, PostStatus postStatus);
+    boolean existByIdAndUserIdAndPostStatusNormal(Long id, String userId, PostStatus postStatus);
 }
