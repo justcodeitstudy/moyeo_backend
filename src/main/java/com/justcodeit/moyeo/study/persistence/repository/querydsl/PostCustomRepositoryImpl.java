@@ -61,13 +61,15 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
     }
 
     @Override
-    public boolean existByIdAndUserIdAndPostStatusNormal(Long id, String userId, PostStatus postStatus) {
-        return jpaQueryFactory.selectFrom(post)
-                .where( post.id.eq(id)
+    public boolean existByIdAndUserIdAndPostStatusNormal(Long postId, String userId, PostStatus postStatus) {
+        Integer postCount = jpaQueryFactory.selectOne()
+                .from(post)
+                .where( post.id.eq(postId)
                         .and(post.userId.eq(userId))
                         .and(post.postStatus.eq(postStatus))
                 )
-                .fetchOne() != null;
+                .fetchOne();
+        return postCount != null;
     }
 
     private BooleanExpression gtPostId(Long postId) {
