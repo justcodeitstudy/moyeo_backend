@@ -6,6 +6,7 @@ import com.justcodeit.moyeo.study.model.inquiry.PostSkillQueryDto;
 import com.justcodeit.moyeo.study.model.inquiry.QPostSkillQueryDto;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -23,7 +24,7 @@ import static com.justcodeit.moyeo.study.persistence.QSkill.*;
 @RequiredArgsConstructor
 public class ScrapCustomRepositoryImpl implements ScrapCustomRepository {
 
-  private final JPAQueryFactory queryFactory;
+    private final JPAQueryFactory queryFactory;
 
   @Override
   public List<ScrapQueryDto> findScrapListByUserId(String userId) {
