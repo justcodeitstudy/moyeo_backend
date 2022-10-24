@@ -9,6 +9,7 @@ import com.justcodeit.moyeo.study.persistence.User;
 import com.justcodeit.moyeo.study.persistence.repository.PostRepository;
 import com.justcodeit.moyeo.study.persistence.repository.UserRepository;
 import com.justcodeit.moyeo.study.persistence.repository.scrap.ScrapRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -42,13 +43,16 @@ class ScrapServiceTest {
   Post post;
   Scrap scrap;
 
-  @Test
-  void makeScrap() throws Exception {
-    //given
+  @BeforeEach
+  void beforeEach() {
     user = createUser("userId", "test@gmail.com", Role.USER, null, null, "tester");
     post = createPost("this is test", user.getUserId());
     scrap = createScrap(user.getUserId(), post.getId());
+  }
 
+  @Test
+  void makeScrap() throws Exception {
+    //given
     when(postRepository.findById(any())).thenReturn(Optional.of(post));
     when(scrapRepository.save(any())).thenReturn(scrap);
     when(scrapRepository.findById(any())).thenReturn(Optional.of(scrap));
@@ -68,11 +72,8 @@ class ScrapServiceTest {
   @Test
   void deleteScrap() throws Exception {
     //given
-    Scrap scrap = createScrap(user.getUserId(), post.getId());
-    Long fakeScrapId = 100L;
-    ReflectionTestUtils.setField(scrap, "id", fakeScrapId);
-
-    when(scrapRepository.findById(fakeScrapId)).thenReturn(Optional.of(scrap));
+    when(postRepository.findById(any())).thenReturn(Optional.of(post));
+    when(scrapRepository.findByUserIdAndPostId(user.getUserId(), post.getId())).thenReturn(Optional.of(scrap));
 
     //when
     scrapService.deleteScrap(user.getUserId(), scrap.getId());
