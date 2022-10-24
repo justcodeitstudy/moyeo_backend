@@ -28,8 +28,10 @@ public class PostService {
     private final PostRepository postRepository;
     private final SkillRepository skillRepository;
     @Transactional
-    public Long createPost(PostCreateReqDto postCreateReqDto) {
+    public Long createPost(PostCreateReqDto postCreateReqDto, String userId) {
         PostMapper postMapper = PostMapper.INSTANCE;
+        postCreateReqDto.setUserId(userId);
+
         Post post = postMapper.createReqDtoToEntity(postCreateReqDto);
         post.setRecruitmentList(postCreateReqDto.getRecruitmentList());
         List<PostSkill> postSkills = postCreateReqDto.getSkillIdList()
@@ -49,7 +51,7 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public PostResDto findPost(Long id) {
-        Post post = postRepository.findByIdCustom(id);
+        Post post = postCustomRepository.findByIdCustom(id);
         return PostMapper.INSTANCE.entityToDto(post);
     }
 

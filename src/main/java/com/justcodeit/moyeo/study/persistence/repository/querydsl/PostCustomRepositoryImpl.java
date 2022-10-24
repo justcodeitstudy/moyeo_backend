@@ -5,9 +5,9 @@ import com.justcodeit.moyeo.study.interfaces.dto.post.PostSearchCondition;
 import com.justcodeit.moyeo.study.model.post.PostStatus;
 import com.justcodeit.moyeo.study.model.post.RecruitStatus;
 import com.justcodeit.moyeo.study.persistence.Post;
-import com.justcodeit.moyeo.study.persistence.QPost;
-import com.justcodeit.moyeo.study.persistence.QPostSkill;
-import com.justcodeit.moyeo.study.persistence.QRecruitment;
+import static com.justcodeit.moyeo.study.persistence.QPost.post;
+import static com.justcodeit.moyeo.study.persistence.QPostSkill.postSkill;
+import static com.justcodeit.moyeo.study.persistence.QRecruitment.recruitment;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -26,10 +26,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PostCustomRepositoryImpl implements PostCustomRepository {
     private final JPAQueryFactory jpaQueryFactory;
-
-    QPost post = QPost.post;
-    QRecruitment recruitment = QRecruitment.recruitment;
-    QPostSkill postSkill = QPostSkill.postSkill;
 
     @Override
     public Post findByIdCustom(Long id) {
@@ -76,7 +72,7 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
         if(postId == null) {
             return null;
         }
-        return QPost.post.id.gt(postId);
+        return post.id.gt(postId);
     }
     private BooleanExpression createSearchCondition(PostSearchCondition postSearchReqDto) {
         BooleanExpression expression = post.postStatus.eq(PostStatus.NORMAL);
@@ -98,7 +94,7 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
 
     private List<OrderSpecifier> postSort(Sort sort) {
         List<OrderSpecifier> ORDERS = new ArrayList<>();
-        if (!sort.isEmpty()) {
+        if (sort.isEmpty()) {
             return ORDERS;
         }
         for (Sort.Order order : sort) {

@@ -18,6 +18,8 @@ public enum ErrorCode {
   NOT_FOUND_POST(404, "P001", "No such Post"),
   NOT_FOUND_SKILL(404, "S001", "No such Skill"),
 
+  NOT_FOUND_SCRAP(404, "R001", "No such Scrap"),
+
   JWT_DECODE_FAILURE(500, "J001", "JWT cannot be decoded"),
   JWT_ENCODE_FAILURE(500, "J002", "DTO encode failure"),
 
