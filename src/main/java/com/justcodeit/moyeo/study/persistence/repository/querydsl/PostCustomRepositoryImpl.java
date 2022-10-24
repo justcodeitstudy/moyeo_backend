@@ -1,5 +1,6 @@
 package com.justcodeit.moyeo.study.persistence.repository.querydsl;
 
+import com.justcodeit.moyeo.study.application.post.exception.PostCannotFoundException;
 import com.justcodeit.moyeo.study.interfaces.dto.post.PostSearchCondition;
 import com.justcodeit.moyeo.study.model.post.PostStatus;
 import com.justcodeit.moyeo.study.model.post.RecruitStatus;
@@ -19,6 +20,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -27,14 +29,15 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
 
     @Override
     public Post findByIdCustom(Long id) {
-        return jpaQueryFactory.selectFrom(post)
+        return Optional.of(jpaQueryFactory.selectFrom(post)
                 .leftJoin(recruitment)
-                    .on(recruitment.post.id.eq(post.id))
+                .on(recruitment.post.id.eq(post.id))
                 .leftJoin(postSkill)
-                    .on(postSkill.post.id.eq(post.id))
+                .on(postSkill.post.id.eq(post.id))
                 .where(post.id.eq(id))
                 .fetchJoin()
-                .fetchOne();
+                .fetchOne()
+        ).orElseThrow(PostCannotFoundException::new);
     }
 
     @Override
@@ -51,6 +54,18 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
                 .fetchJoin()
                 .distinct()
                 .fetch();
+    }
+
+    @Override
+    public boolean existByIdAndUserIdAndPostStatusNormal(Long postId, String userId, PostStatus postStatus) {
+        Integer postCount = jpaQueryFactory.selectOne()
+                .from(post)
+                .where( post.id.eq(postId)
+                        .and(post.userId.eq(userId))
+                        .and(post.postStatus.eq(postStatus))
+                )
+                .fetchOne();
+        return postCount != null;
     }
 
     private BooleanExpression gtPostId(Long postId) {
