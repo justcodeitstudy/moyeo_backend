@@ -33,7 +33,7 @@ public class ScrapService {
       throw new PostAlreadyDeletedException("이미 삭제된 모집글입니다");
     }
 
-    if (scrapRepository.findByUserIdAndPostId(userId, post.getId()).isPresent()) {
+    if (scrapRepository.existsByUserIdAndPostId(userId, post.getId())) {
       throw new PostAlreadyScrappedException("이미 스크랩이 완료된 모집글입니다");
     }
     Scrap scrap = new Scrap(userId, post.getId());
