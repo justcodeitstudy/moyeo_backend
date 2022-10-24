@@ -51,7 +51,7 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public PostResDto findPost(Long id) {
-        Post post = postCustomRepository.findByIdCustom(id);
+        Post post = postRepository.findByIdCustom(id);
         return PostMapper.INSTANCE.entityToDto(post);
     }
 
