@@ -4,12 +4,11 @@ import com.justcodeit.moyeo.study.application.skill.exception.SkillCannotFoundEx
 import com.justcodeit.moyeo.study.interfaces.dto.post.CardResDto;
 import com.justcodeit.moyeo.study.interfaces.dto.post.PostCreateReqDto;
 import com.justcodeit.moyeo.study.interfaces.dto.post.PostResDto;
+import com.justcodeit.moyeo.study.interfaces.dto.post.PostSearchCondition;
 import com.justcodeit.moyeo.study.interfaces.mapper.PostMapper;
 import com.justcodeit.moyeo.study.persistence.Post;
 import com.justcodeit.moyeo.study.persistence.PostSkill;
 import com.justcodeit.moyeo.study.persistence.repository.PostRepository;
-import com.justcodeit.moyeo.study.persistence.repository.PostSkillRepository;
-import com.justcodeit.moyeo.study.persistence.repository.RecruitmentRepository;
 import com.justcodeit.moyeo.study.persistence.repository.SkillRepository;
 import com.justcodeit.moyeo.study.persistence.repository.querydsl.PostCustomRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,14 +24,14 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final PostSkillRepository postSkillRepository;
     private final SkillRepository skillRepository;
     private final PostCustomRepository postCustomRepository;
-    private final RecruitmentRepository recruitmentRepository;
 
     @Transactional
-    public Long createPost(PostCreateReqDto postCreateReqDto) {
+    public Long createPost(PostCreateReqDto postCreateReqDto, String userId) {
         PostMapper postMapper = PostMapper.INSTANCE;
+        postCreateReqDto.setUserId(userId);
+
         Post post = postMapper.createReqDtoToEntity(postCreateReqDto);
         post.setRecruitmentList(postCreateReqDto.getRecruitmentList());
         List<PostSkill> postSkills = postCreateReqDto.getSkillIdList()
@@ -52,13 +51,13 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public PostResDto findPost(Long id) {
-        Post post = postCustomRepository.findById(id);
+        Post post = postCustomRepository.findByIdCustom(id);
         return PostMapper.INSTANCE.entityToDto(post);
     }
 
     @Transactional(readOnly = true)
-    public List<CardResDto> findPostAll(Pageable pageable, String userId) {
-        List<Post> postList = postCustomRepository.findAll(pageable);
-        return PostMapper.INSTANCE.entityToCardResDto(postList);
+    public List<CardResDto> findPostAll(Pageable pageable, String userId, PostSearchCondition postSearchReqDto) {
+        List<Post> findAllBySearchCondition = postCustomRepository.findAllBySearchCondition(pageable, postSearchReqDto);
+        return PostMapper.INSTANCE.entityListToCardResDtoList(findAllBySearchCondition);
     }
 }
