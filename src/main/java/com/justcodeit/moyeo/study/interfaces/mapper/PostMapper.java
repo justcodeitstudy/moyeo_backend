@@ -19,6 +19,8 @@ public interface PostMapper {
     @Mapping(target = "recruitmentList", ignore = true)
     Post createReqDtoToEntity(PostCreateReqDto postCreateReqDto);
     PostResDto entityToDto(Post post);
-    List<CardResDto> entityToCardResDto(List<Post> post);
+    CardResDto entityListToCardResDtoList(Post post);
+    @Mapping(target = "isScrap", ignore = true)
+    List<CardResDto> entityListToCardResDtoList(List<Post> post);
     List<PostResDto> entityListToDtoList(List<Post> postList);
 }
