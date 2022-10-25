@@ -6,7 +6,8 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class GetUserResDto {
+public class ProfileInfo {
+
   private final String email;
   private final String picture;
   private final String nickname;

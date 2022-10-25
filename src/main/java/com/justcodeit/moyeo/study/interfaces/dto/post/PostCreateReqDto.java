@@ -27,16 +27,16 @@ public class PostCreateReqDto {
     private PostType postType;
     private ProgressType progressType;
     private RecruitStatus recruitStatus;
+    private String userId;
+    private String contactInfo;
+    @Enumerated(EnumType.STRING)
+    private PostStatus postStatus;
     @Valid
     @Size(min = 1, max = 7)
     private List<RecruitmentDto> recruitmentList;
     @Valid
     @Size(min = 1, max = 10)
     private List<Long> skillIdList;
-    private String contactInfo;
-    @Enumerated(EnumType.STRING)
-    private PostStatus postStatus;
-
     PostCreateReqDto() {
         this.recruitStatus = RecruitStatus.RECRUITING;
         this.postStatus = PostStatus.NORMAL;
