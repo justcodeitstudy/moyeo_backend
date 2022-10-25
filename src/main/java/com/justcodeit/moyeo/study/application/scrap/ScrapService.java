@@ -29,14 +29,9 @@ public class ScrapService {
     Post post = postRepository.findById(postId)
             .orElseThrow(PostCannotFoundException::new);
 
-    if (post.getPostStatus() != PostStatus.NORMAL) {
-      throw new PostAlreadyDeletedException("이미 삭제된 모집글입니다");
-    }
-
-    if (scrapRepository.existsByUserIdAndPostId(userId, post.getId())) {
-      throw new PostAlreadyScrappedException("이미 스크랩이 완료된 모집글입니다");
-    }
+    validatePostByUserId(userId, post);
     Scrap scrap = new Scrap(userId, post.getId());
+
     return scrapRepository.save(scrap).getId();
   }
 
@@ -58,8 +53,13 @@ public class ScrapService {
     return scrapRepository.findScrapListByUserId(userId);
   }
 
-  private Scrap findScrap(Long scrapId) {
-    return scrapRepository.findById(scrapId)
-            .orElseThrow(() -> new ScrapCannotFoundException(String.format("해당 스크랩을 찾을 수 없습니다 : %s", scrapId)));
+  private void validatePostByUserId(String userId, Post post) {
+    if (post.getPostStatus() != PostStatus.NORMAL) {
+      throw new PostAlreadyDeletedException("이미 삭제된 모집글입니다");
+    }
+
+    if (scrapRepository.existsByUserIdAndPostId(userId, post.getId())) {
+      throw new PostAlreadyScrappedException("이미 스크랩이 완료된 모집글입니다");
+    }
   }
 }
