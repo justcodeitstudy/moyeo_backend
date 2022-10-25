@@ -1,5 +1,7 @@
 package com.justcodeit.moyeo.study.persistence.repository.querydsl;
 
+import com.justcodeit.moyeo.study.application.post.exception.PostCannotFoundException;
+import com.justcodeit.moyeo.study.interfaces.dto.post.PostSearchCondition;
 import com.justcodeit.moyeo.study.model.inquiry.PostQueryDto;
 import com.justcodeit.moyeo.study.model.inquiry.PostSkillQueryDto;
 import com.justcodeit.moyeo.study.model.inquiry.QPostQueryDto;
@@ -7,9 +9,6 @@ import com.justcodeit.moyeo.study.model.inquiry.QPostSkillQueryDto;
 import com.justcodeit.moyeo.study.model.post.PostStatus;
 import com.justcodeit.moyeo.study.model.post.RecruitStatus;
 import com.justcodeit.moyeo.study.persistence.Post;
-import static com.justcodeit.moyeo.study.persistence.QPost.post;
-import static com.justcodeit.moyeo.study.persistence.QPostSkill.postSkill;
-import static com.justcodeit.moyeo.study.persistence.QRecruitment.recruitment;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -25,10 +24,12 @@ import org.springframework.util.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.justcodeit.moyeo.study.persistence.QPost.post;
+import static com.justcodeit.moyeo.study.persistence.QPost.*;
 import static com.justcodeit.moyeo.study.persistence.QPostSkill.*;
+import static com.justcodeit.moyeo.study.persistence.QRecruitment.*;
 import static com.justcodeit.moyeo.study.persistence.QScrap.*;
 import static com.justcodeit.moyeo.study.persistence.QSkill.*;
 
@@ -67,6 +68,65 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
     }
 
     @Override
+    public boolean existByIdAndUserIdAndPostStatusNormal(Long postId, String userId, PostStatus postStatus) {
+        Integer postCount = jpaQueryFactory.selectOne()
+                .from(post)
+                .where( post.id.eq(postId)
+                        .and(post.userId.eq(userId))
+                        .and(post.postStatus.eq(postStatus))
+                )
+                .fetchOne();
+        return postCount != null;
+    }
+
+    @Override
+    public List<PostQueryDto> findPostList(String userId, PostSearchCondition searchCondition, Pageable pageable) {
+        List<PostQueryDto> postDtoList = jpaQueryFactory
+                .select(new QPostQueryDto(
+                        post.id,
+                        post.title,
+                        post.createDate,
+                        post.viewCount,
+                        new CaseBuilder()
+                                .when(scrap.isNotNull().and(scrap.userId.eq(userId)))
+                                .then(true)
+                                .otherwise(false)
+                ))
+                .from(post)
+                .leftJoin(scrap).on(post.id.eq(scrap.postId))
+                .where(gtPostId(pageable.getOffset()), createSearchCondition(searchCondition))
+                .orderBy(postSort(pageable.getSort()).toArray(OrderSpecifier[]::new))
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        List<Long> postIds = extractPostIds(postDtoList);
+
+        List<PostSkillQueryDto> postSkillDtoList = jpaQueryFactory
+                .select(new QPostSkillQueryDto(
+                        postSkill.id,
+                        post.id,
+                        skill.id,
+                        skill.name
+                ))
+                .from(postSkill)
+                .join(postSkill.post, post)
+                .join(postSkill.skill, skill)
+                .where(
+                        post.id.in(postIds),
+                        skill.orderNum.in(
+                                JPAExpressions
+                                        .select(skill.orderNum)
+                                        .from(skill)
+                                        .orderBy(skill.orderNum.asc())
+                        )
+                )
+                .fetch();
+
+        combineIntoOne(postDtoList, postSkillDtoList);
+        return postDtoList;
+    }
+
+    @Override
     public List<PostQueryDto> findPostListByUserId(String userId) {
         List<PostQueryDto> postDtoList = jpaQueryFactory
                 .select(new QPostQueryDto(
@@ -77,7 +137,7 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
                         null
                 ))
                 .from(post)
-                .where(post.userId.eq(userId))
+                .where(post.userId.eq(userId), post.postStatus.eq(PostStatus.NORMAL))
                 .orderBy(post.createDate.desc())
                 .fetch();
 
