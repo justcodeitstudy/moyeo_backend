@@ -14,10 +14,10 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.justcodeit.moyeo.study.persistence.QPost.*;
-import static com.justcodeit.moyeo.study.persistence.QPostSkill.*;
-import static com.justcodeit.moyeo.study.persistence.QScrap.*;
-import static com.justcodeit.moyeo.study.persistence.QSkill.*;
+import static com.justcodeit.moyeo.study.persistence.QPost.post;
+import static com.justcodeit.moyeo.study.persistence.QPostSkill.postSkill;
+import static com.justcodeit.moyeo.study.persistence.QScrap.scrap;
+import static com.justcodeit.moyeo.study.persistence.QSkill.skill;
 
 @Repository
 @RequiredArgsConstructor
