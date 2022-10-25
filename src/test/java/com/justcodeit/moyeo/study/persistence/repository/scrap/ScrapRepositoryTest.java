@@ -14,6 +14,7 @@ import com.justcodeit.moyeo.study.persistence.repository.PostSkillRepository;
 import com.justcodeit.moyeo.study.persistence.repository.SkillRepository;
 import com.justcodeit.moyeo.study.persistence.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,6 +25,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
+@Disabled
 @SpringBootTest
 @Transactional
 class ScrapRepositoryTest {
@@ -105,16 +107,16 @@ class ScrapRepositoryTest {
 
   private Post createPost(String title, String userId) {
     return Post.builder()
-            .title(title)
-            .userId(userId)
-            .build();
+        .title(title)
+        .userId(userId)
+        .build();
   }
 
   private Skill createSkill(SkillCategory category, String name, Integer orderNum) {
     return Skill.builder()
-            .category(category)
-            .name(name)
-            .orderNum(orderNum)
-            .build();
+        .category(category)
+        .name(name)
+        .orderNum(orderNum)
+        .build();
   }
 }
