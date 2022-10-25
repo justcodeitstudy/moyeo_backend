@@ -7,7 +7,7 @@ import com.justcodeit.moyeo.study.interfaces.dto.post.PostResDto;
 import com.justcodeit.moyeo.study.interfaces.dto.post.PostSearchCondition;
 import com.justcodeit.moyeo.study.interfaces.dto.post.RecruitmentStatusReqDto;
 import com.justcodeit.moyeo.study.interfaces.mapper.PostMapper;
-import com.justcodeit.moyeo.study.model.post.PostStatus;
+import com.justcodeit.moyeo.study.model.inquiry.PostQueryDto;
 import com.justcodeit.moyeo.study.persistence.Post;
 import com.justcodeit.moyeo.study.persistence.PostSkill;
 import com.justcodeit.moyeo.study.persistence.repository.PostRepository;
@@ -73,5 +73,10 @@ public class PostService {
         if(!isUserPostExist) {
             throw new AccessDeniedException("User is Not Writer");
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<PostQueryDto> findPostListByUser(String userId) {
+        return postCustomRepository.findPostListByUserId(userId);
     }
 }

@@ -1,7 +1,9 @@
 package com.justcodeit.moyeo.study.persistence.repository.querydsl;
 
-import com.justcodeit.moyeo.study.application.post.exception.PostCannotFoundException;
-import com.justcodeit.moyeo.study.interfaces.dto.post.PostSearchCondition;
+import com.justcodeit.moyeo.study.model.inquiry.PostQueryDto;
+import com.justcodeit.moyeo.study.model.inquiry.PostSkillQueryDto;
+import com.justcodeit.moyeo.study.model.inquiry.QPostQueryDto;
+import com.justcodeit.moyeo.study.model.inquiry.QPostSkillQueryDto;
 import com.justcodeit.moyeo.study.model.post.PostStatus;
 import com.justcodeit.moyeo.study.model.post.RecruitStatus;
 import com.justcodeit.moyeo.study.persistence.Post;
@@ -11,6 +13,8 @@ import static com.justcodeit.moyeo.study.persistence.QRecruitment.recruitment;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +24,13 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static com.justcodeit.moyeo.study.persistence.QPost.post;
+import static com.justcodeit.moyeo.study.persistence.QPostSkill.*;
+import static com.justcodeit.moyeo.study.persistence.QScrap.*;
+import static com.justcodeit.moyeo.study.persistence.QSkill.*;
 
 @Repository
 @RequiredArgsConstructor
@@ -57,15 +67,45 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
     }
 
     @Override
-    public boolean existByIdAndUserIdAndPostStatusNormal(Long postId, String userId, PostStatus postStatus) {
-        Integer postCount = jpaQueryFactory.selectOne()
+    public List<PostQueryDto> findPostListByUserId(String userId) {
+        List<PostQueryDto> postDtoList = jpaQueryFactory
+                .select(new QPostQueryDto(
+                        post.id,
+                        post.title,
+                        post.createDate,
+                        post.viewCount,
+                        null
+                ))
                 .from(post)
-                .where( post.id.eq(postId)
-                        .and(post.userId.eq(userId))
-                        .and(post.postStatus.eq(postStatus))
+                .where(post.userId.eq(userId))
+                .orderBy(post.createDate.desc())
+                .fetch();
+
+        List<Long> postIds = extractPostIds(postDtoList);
+
+        List<PostSkillQueryDto> postSkillDtoList = jpaQueryFactory
+                .select(new QPostSkillQueryDto(
+                        postSkill.id,
+                        post.id,
+                        skill.id,
+                        skill.name
+                ))
+                .from(postSkill)
+                .join(postSkill.post, post)
+                .join(postSkill.skill, skill)
+                .where(
+                        post.id.in(postIds),
+                        skill.orderNum.in(
+                                JPAExpressions
+                                        .select(skill.orderNum)
+                                        .from(skill)
+                                        .orderBy(skill.orderNum.asc())
+                        )
                 )
-                .fetchOne();
-        return postCount != null;
+                .fetch();
+
+        combineIntoOne(postDtoList, postSkillDtoList);
+        return postDtoList;
     }
 
     private BooleanExpression gtPostId(Long postId) {
@@ -104,5 +144,25 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
             }
         }
         return ORDERS;
+    }
+
+    private List<Long> extractPostIds(List<PostQueryDto> postDtoList) {
+        return postDtoList.stream()
+                .map(PostQueryDto::getPostId)
+                .collect(Collectors.toList());
+    }
+
+    private void combineIntoOne(List<PostQueryDto> postDtoList, List<PostSkillQueryDto> postSkillDtoList) {
+        Map<Long, List<PostSkillQueryDto>> postSkillDtoListMap = postSkillDtoList.stream()
+                .collect(Collectors.groupingBy(PostSkillQueryDto::getPostId));
+
+        postSkillDtoListMap.forEach((postId, dtos) -> {
+            if (dtos.size() > 3) {
+                List<PostSkillQueryDto> subDtos = new ArrayList<>(dtos.subList(0, 3));
+                postSkillDtoListMap.put(postId, subDtos);
+            }
+        });
+
+        postDtoList.forEach(postQueryDto -> postQueryDto.setPostSkills(postSkillDtoListMap.get(postQueryDto.getPostId())));
     }
 }
