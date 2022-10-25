@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -43,9 +42,7 @@ public class ScrapCustomRepositoryImpl implements ScrapCustomRepository {
             .orderBy(scrap.createdAt.desc())
             .fetch();
 
-    List<Long> postIds = scrapDtoList.stream()
-            .map(ScrapQueryDto::getPostId)
-            .collect(Collectors.toList());
+    List<Long> postIds = extractPostIds(scrapDtoList);
 
     // 각 포스트마다 스킬 리스트 조회
     List<PostSkillQueryDto> postSkillDtoList = queryFactory
@@ -69,6 +66,17 @@ public class ScrapCustomRepositoryImpl implements ScrapCustomRepository {
             )
             .fetch();
 
+    combineIntoOne(scrapDtoList, postSkillDtoList);
+    return scrapDtoList;
+  }
+
+  private List<Long> extractPostIds(List<ScrapQueryDto> scrapDtoList) {
+    return scrapDtoList.stream()
+            .map(ScrapQueryDto::getPostId)
+            .collect(Collectors.toList());
+  }
+
+  private void combineIntoOne(List<ScrapQueryDto> scrapDtoList, List<PostSkillQueryDto> postSkillDtoList) {
     Map<Long, List<PostSkillQueryDto>> postSkillDtoListMap = postSkillDtoList.stream()
             .collect(Collectors.groupingBy(PostSkillQueryDto::getPostId));
 
@@ -80,7 +88,5 @@ public class ScrapCustomRepositoryImpl implements ScrapCustomRepository {
     });
 
     scrapDtoList.forEach(scrapQueryDto -> scrapQueryDto.setPostSkills(postSkillDtoListMap.get(scrapQueryDto.getPostId())));
-
-    return scrapDtoList;
   }
 }
