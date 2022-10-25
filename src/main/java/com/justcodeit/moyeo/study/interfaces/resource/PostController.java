@@ -1,12 +1,22 @@
 package com.justcodeit.moyeo.study.interfaces.resource;
 
 import com.justcodeit.moyeo.study.application.post.PostService;
+import com.justcodeit.moyeo.study.interfaces.dto.FailureRes;
 import com.justcodeit.moyeo.study.interfaces.dto.post.CardResDto;
 import com.justcodeit.moyeo.study.interfaces.dto.post.PostCreateReqDto;
 import com.justcodeit.moyeo.study.interfaces.dto.post.PostResDto;
 import com.justcodeit.moyeo.study.interfaces.dto.post.PostSearchCondition;
 import com.justcodeit.moyeo.study.interfaces.dto.post.RecruitmentStatusReqDto;
 import com.justcodeit.moyeo.study.model.jwt.UserToken;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,11 +33,21 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.util.List;
 
+@Tag(name = "모집글", description = "모집글 CRUD API.")
 @RestController
 @RequestMapping("/post")
 @RequiredArgsConstructor
 public class PostController {
     private final PostService postService;
+
+    @Operation(summary = "모집글 작성", description = "로그인한 유저의 모집글 작성")
+    @Parameter(name = "X-MOYEO-AUTH-TOKEN", in = ParameterIn.HEADER, required = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "success",
+                content = @Content(schema = @Schema(implementation = PostResDto.class))),
+            @ApiResponse(responseCode = "401", description = "401 Unauthorized",
+                content = @Content(schema = @Schema(implementation = FailureRes.class)))
+    })
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping
     public PostResDto createPost(@RequestBody @Valid PostCreateReqDto postCreateRequestDto, @AuthenticationPrincipal UserToken userToken) {
@@ -35,19 +55,51 @@ public class PostController {
         return postService.findPost(postId);
     }
 
+    @Operation(summary = "모집글 상세 정보", description = "모집글 단건 조회")
+    @Parameter(name = "id",description = "모집글 번호", in = ParameterIn.PATH, required = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "success",
+                    content = @Content(schema = @Schema(implementation = PostResDto.class))),
+            @ApiResponse(responseCode = "404", description = "404 Not Found",
+                    content = @Content(schema = @Schema(implementation = FailureRes.class)))
+    })
     @GetMapping("/{id}")
     public PostResDto findPostById(@PathVariable Long id) {
         return postService.findPost(id);
     }
 
+    @Operation(summary = "모집글 전체 목록", description = "모집글 List 조회")
+    @Parameters(value = {
+            @Parameter(name = "X-MOYEO-AUTH-TOKEN", description = "JWT 토큰",
+                    in = ParameterIn.HEADER, required = false),
+            @Parameter(name = "searchCondition", description = "검색 조건",
+                    in = ParameterIn.QUERY, required = false)
+    })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "success",
+                    content = @Content(schema = @Schema(implementation = CardResDto.class)))
+    })
     @GetMapping
-    public List<CardResDto> findPostAll(Pageable pageable, @AuthenticationPrincipal UserToken userToken, @ModelAttribute PostSearchCondition searchCondition) {
+    public List<CardResDto> findPostAll(Pageable pageable, @AuthenticationPrincipal UserToken userToken,
+                                        @ModelAttribute PostSearchCondition searchCondition) {
         String userId = "";
         if(userToken != null) {
             userId = userToken.getUserId();
         }
         return postService.findPostAll(pageable, userId, searchCondition);
     }
+
+    @Operation(summary = "모집글 모집 상태 변경", description = "모집글의 모집 상태를 변경한다. ex) 모집중 -> 모집완료")
+    @Parameters(value = {
+        @Parameter(name = "id", description = "모집글 번호", in = ParameterIn.PATH, required = true),
+        @Parameter(name = "X-MOYEO-AUTH-TOKEN", description = "JWT 토큰", in = ParameterIn.HEADER, required = true)
+    })
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "success"),
+        @ApiResponse(responseCode = "401", description = "401 Unauthorized",
+            content = @Content(schema = @Schema(implementation = FailureRes.class))
+        )
+    })
     @PatchMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public void postRecruitStatusChange(@PathVariable(name = "id") Long postId, @RequestBody RecruitmentStatusReqDto recruitmentStatusReqDto, @AuthenticationPrincipal UserToken userToken) {
