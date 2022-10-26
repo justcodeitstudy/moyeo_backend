@@ -9,6 +9,7 @@ import com.justcodeit.moyeo.study.model.inquiry.QPostSkillQueryDto;
 import com.justcodeit.moyeo.study.model.post.PostStatus;
 import com.justcodeit.moyeo.study.model.post.RecruitStatus;
 import com.justcodeit.moyeo.study.persistence.Post;
+import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -16,6 +17,8 @@ import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
@@ -55,9 +58,9 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
     public List<Post> findAllBySearchCondition(Pageable pageable, PostSearchCondition searchCondition) {
         return jpaQueryFactory.selectFrom(post)
                 .leftJoin(recruitment)
-                    .on(recruitment.post.id.eq(post.id))
+                .on(recruitment.post.id.eq(post.id))
                 .leftJoin(postSkill)
-                    .on(postSkill.post.id.eq(post.id))
+                .on(postSkill.post.id.eq(post.id))
                 .where(gtPostId(pageable.getOffset())
                         .and(createSearchCondition(searchCondition)))
                 .limit(pageable.getPageSize())
@@ -80,7 +83,7 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
     }
 
     @Override
-    public List<PostQueryDto> findPostList(String userId, PostSearchCondition searchCondition, Pageable pageable) {
+    public Page<PostQueryDto> findPostList(String userId, PostSearchCondition searchCondition, Pageable pageable) {
         List<PostQueryDto> postDtoList = jpaQueryFactory
                 .select(new QPostQueryDto(
                         post.id,
@@ -123,7 +126,7 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
                 .fetch();
 
         combineIntoOne(postDtoList, postSkillDtoList);
-        return postDtoList;
+        return new PageImpl<>(postDtoList, pageable, postDtoList.size());
     }
 
     @Override

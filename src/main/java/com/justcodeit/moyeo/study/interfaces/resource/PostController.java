@@ -2,11 +2,11 @@ package com.justcodeit.moyeo.study.interfaces.resource;
 
 import com.justcodeit.moyeo.study.application.post.PostService;
 import com.justcodeit.moyeo.study.interfaces.dto.FailureRes;
-import com.justcodeit.moyeo.study.interfaces.dto.post.CardResDto;
 import com.justcodeit.moyeo.study.interfaces.dto.post.PostCreateReqDto;
 import com.justcodeit.moyeo.study.interfaces.dto.post.PostResDto;
 import com.justcodeit.moyeo.study.interfaces.dto.post.PostSearchCondition;
 import com.justcodeit.moyeo.study.interfaces.dto.post.RecruitmentStatusReqDto;
+import com.justcodeit.moyeo.study.model.inquiry.PostQueryDto;
 import com.justcodeit.moyeo.study.model.jwt.UserToken;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -18,6 +18,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -50,7 +52,7 @@ public class PostController {
     })
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping
-    public PostResDto createPost(@RequestBody @Valid PostCreateReqDto postCreateRequestDto, @AuthenticationPrincipal UserToken userToken) {
+    public PostResDto createPost(@RequestBody @Valid PostCreateReqDto postCreateRequestDto,@Parameter(hidden = true) @AuthenticationPrincipal UserToken userToken) {
         Long postId = postService.createPost(postCreateRequestDto, userToken.getUserId());
         return postService.findPost(postId);
     }
@@ -71,17 +73,15 @@ public class PostController {
     @Operation(summary = "모집글 전체 목록", description = "모집글 List 조회")
     @Parameters(value = {
             @Parameter(name = "X-MOYEO-AUTH-TOKEN", description = "JWT 토큰",
-                    in = ParameterIn.HEADER, required = false),
-            @Parameter(name = "searchCondition", description = "검색 조건",
-                    in = ParameterIn.QUERY, required = false)
+                    in = ParameterIn.HEADER, required = false)
     })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "success",
-                    content = @Content(schema = @Schema(implementation = CardResDto.class)))
+                    content = @Content(schema = @Schema(implementation = PostQueryDto.class)))
     })
     @GetMapping
-    public List<CardResDto> findPostAll(Pageable pageable, @AuthenticationPrincipal UserToken userToken,
-                                        @ModelAttribute PostSearchCondition searchCondition) {
+    public Page<PostQueryDto> findPostAll(Pageable pageable, @Parameter(hidden = true) @AuthenticationPrincipal UserToken userToken,
+                                          @Parameter(description = "검색 조건", required = false) @ModelAttribute PostSearchCondition searchCondition) {
         String userId = "";
         if(userToken != null) {
             userId = userToken.getUserId();
