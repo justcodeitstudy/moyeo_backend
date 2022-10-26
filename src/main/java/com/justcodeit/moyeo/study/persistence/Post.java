@@ -24,6 +24,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -76,7 +77,11 @@ public class Post {
         this.postStatus = postStatus;
         this.userId = userId;
     }
-
+    @PrePersist
+    public void preSave() {
+        this.postStatus = PostStatus.NORMAL;
+        this.recruitStatus = RecruitStatus.RECRUITING;
+    }
     private void viewCountIncrease() {
         this.viewCount += 1;
     }
