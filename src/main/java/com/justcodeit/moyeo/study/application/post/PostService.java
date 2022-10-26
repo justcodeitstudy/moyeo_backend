@@ -14,6 +14,7 @@ import com.justcodeit.moyeo.study.persistence.PostSkill;
 import com.justcodeit.moyeo.study.persistence.repository.PostRepository;
 import com.justcodeit.moyeo.study.persistence.repository.SkillRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -57,9 +58,8 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<CardResDto> findPostAll(Pageable pageable, String userId, PostSearchCondition postSearchReqDto) {
-        List<Post> findAllBySearchCondition = postRepository.findAllBySearchCondition(pageable, postSearchReqDto);
-        return PostMapper.INSTANCE.entityListToCardResDtoList(findAllBySearchCondition);
+    public Page<PostQueryDto> findPostAll(Pageable pageable, String userId, PostSearchCondition postSearchReqDto) {
+        return postRepository.findPostList(userId, postSearchReqDto, pageable);
     }
 
     @Transactional
