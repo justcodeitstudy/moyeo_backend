@@ -32,14 +32,14 @@ public class ScrapController {
   @Operation(summary = "북마크 리스트 조회", description = "로그인한 유저의 북마크 리스트 조회")
   @Parameter(name = "X-MOYEO-AUTH-TOKEN", in = ParameterIn.HEADER, required = true)
   @GetMapping
-  public ResponseEntity<List<ScrapResponseDto>> getScrapList(@AuthenticationPrincipal UserToken userToken) {
+  public ResponseEntity<List<ScrapResponseDto>> getScrapList(@Parameter(hidden = true) @AuthenticationPrincipal UserToken userToken) {
     return ResponseEntity.ok(scrapService.findScrapListByUser(userToken.getUserId()));
   }
 
   @Operation(summary = "북마크 생성", description = "로그인한 유저의 하나의 모집글에 대한 북마크 생성")
   @Parameter(name = "X-MOYEO-AUTH-TOKEN", in = ParameterIn.HEADER, required = true)
   @PostMapping
-  public ResponseEntity<Void> createScrap(@AuthenticationPrincipal UserToken userToken, @RequestParam String postId) {
+  public ResponseEntity<Void> createScrap(@Parameter(hidden = true) @AuthenticationPrincipal UserToken userToken, @RequestParam String postId) {
     scrapService.makeScrap(userToken.getUserId(), Long.valueOf(postId));
     return new ResponseEntity<>(HttpStatus.OK);
   }
@@ -47,7 +47,7 @@ public class ScrapController {
   @Operation(summary = "북마크 삭제", description = "로그인한 유저의 이미 북마크된 모집글에 대한 북마크 삭제")
   @Parameter(name = "X-MOYEO-AUTH-TOKEN", in = ParameterIn.HEADER, required = true)
   @DeleteMapping("/{postId}")
-  public ResponseEntity<Void> deleteScrap(@AuthenticationPrincipal UserToken userToken, @PathVariable String postId) {
+  public ResponseEntity<Void> deleteScrap(@Parameter(hidden = true) @AuthenticationPrincipal UserToken userToken, @PathVariable String postId) {
     scrapService.deleteScrap(userToken.getUserId(), Long.valueOf(postId));
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
