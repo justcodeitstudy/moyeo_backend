@@ -2,16 +2,15 @@ package com.justcodeit.moyeo.study.persistence.repository.querydsl;
 
 import com.justcodeit.moyeo.study.application.post.exception.PostCannotFoundException;
 import com.justcodeit.moyeo.study.interfaces.dto.post.PostSearchCondition;
+import com.justcodeit.moyeo.study.interfaces.dto.scrap.PostSkillResponseDto;
 import com.justcodeit.moyeo.study.model.inquiry.PostQueryDto;
-import com.justcodeit.moyeo.study.model.inquiry.PostSkillQueryDto;
 import com.justcodeit.moyeo.study.model.inquiry.QPostQueryDto;
-import com.justcodeit.moyeo.study.model.inquiry.QPostSkillQueryDto;
 import com.justcodeit.moyeo.study.model.post.PostStatus;
 import com.justcodeit.moyeo.study.model.post.RecruitStatus;
 import com.justcodeit.moyeo.study.persistence.Post;
-import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.JPAExpressions;
@@ -104,8 +103,9 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
 
         List<Long> postIds = extractPostIds(postDtoList);
 
-        List<PostSkillQueryDto> postSkillDtoList = jpaQueryFactory
-                .select(new QPostSkillQueryDto(
+        List<PostSkillResponseDto> postSkillDtoList = jpaQueryFactory
+                .select(Projections.constructor(
+                        PostSkillResponseDto.class,
                         postSkill.id,
                         post.id,
                         skill.id,
@@ -146,8 +146,9 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
 
         List<Long> postIds = extractPostIds(postDtoList);
 
-        List<PostSkillQueryDto> postSkillDtoList = jpaQueryFactory
-                .select(new QPostSkillQueryDto(
+        List<PostSkillResponseDto> postSkillDtoList = jpaQueryFactory
+                .select(Projections.constructor(
+                        PostSkillResponseDto.class,
                         postSkill.id,
                         post.id,
                         skill.id,
@@ -215,13 +216,13 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
                 .collect(Collectors.toList());
     }
 
-    private void combineIntoOne(List<PostQueryDto> postDtoList, List<PostSkillQueryDto> postSkillDtoList) {
-        Map<Long, List<PostSkillQueryDto>> postSkillDtoListMap = postSkillDtoList.stream()
-                .collect(Collectors.groupingBy(PostSkillQueryDto::getPostId));
+    private void combineIntoOne(List<PostQueryDto> postDtoList, List<PostSkillResponseDto> postSkillDtoList) {
+        Map<Long, List<PostSkillResponseDto>> postSkillDtoListMap = postSkillDtoList.stream()
+                .collect(Collectors.groupingBy(PostSkillResponseDto::getPostId));
 
         postSkillDtoListMap.forEach((postId, dtos) -> {
             if (dtos.size() > 3) {
-                List<PostSkillQueryDto> subDtos = new ArrayList<>(dtos.subList(0, 3));
+                List<PostSkillResponseDto> subDtos = new ArrayList<>(dtos.subList(0, 3));
                 postSkillDtoListMap.put(postId, subDtos);
             }
         });

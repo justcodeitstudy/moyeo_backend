@@ -5,6 +5,7 @@ import com.justcodeit.moyeo.study.interfaces.dto.FailureRes;
 import com.justcodeit.moyeo.study.interfaces.dto.post.PostCreateReqDto;
 import com.justcodeit.moyeo.study.interfaces.dto.post.PostResDto;
 import com.justcodeit.moyeo.study.interfaces.dto.post.PostSearchCondition;
+import com.justcodeit.moyeo.study.interfaces.dto.post.PostSimpleResponseDto;
 import com.justcodeit.moyeo.study.interfaces.dto.post.RecruitmentStatusReqDto;
 import com.justcodeit.moyeo.study.model.inquiry.PostQueryDto;
 import com.justcodeit.moyeo.study.model.jwt.UserToken;
@@ -19,8 +20,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -104,5 +105,12 @@ public class PostController {
     @PreAuthorize("hasRole('ROLE_USER')")
     public void postRecruitStatusChange(@PathVariable(name = "id") Long postId, @RequestBody RecruitmentStatusReqDto recruitmentStatusReqDto, @AuthenticationPrincipal UserToken userToken) {
         postService.postRecruitStatusChange(postId, userToken.getUserId(), recruitmentStatusReqDto);
+    }
+
+    @Operation(summary = "자신이 작성한 모집글 리스트 조회", description = "로그인한 유저 자신이 작성한 모집글 리스트 조회")
+    @Parameter(name = "X-MOYEO-AUTH-TOKEN", in = ParameterIn.HEADER, required = true)
+    @GetMapping("/me")
+    public ResponseEntity<List<PostSimpleResponseDto>> findPostListByUser(@Parameter(hidden = true) @AuthenticationPrincipal UserToken userToken) {
+        return ResponseEntity.ok(postService.findPostListByUser(userToken.getUserId()));
     }
 }

@@ -1,5 +1,6 @@
 package com.justcodeit.moyeo.study.model.inquiry;
 
+import com.justcodeit.moyeo.study.interfaces.dto.scrap.PostSkillResponseDto;
 import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -29,7 +30,7 @@ public class PostQueryDto {
   private Boolean isScrapped;
 
   @Schema(description = "모집글 스킬 조회 dto 리스트")
-  private List<PostSkillQueryDto> postSkills;
+  private List<PostSkillResponseDto> postSkills;
 
   @QueryProjection
   public PostQueryDto(Long postId, String title, LocalDateTime createdAt, Long viewCount, Boolean isScrapped) {
@@ -40,7 +41,7 @@ public class PostQueryDto {
     this.isScrapped = isScrapped;
   }
 
-  public void setPostSkills(List<PostSkillQueryDto> postSkills) {
+  public void setPostSkills(List<PostSkillResponseDto> postSkills) {
     this.postSkills = postSkills;
   }
 }

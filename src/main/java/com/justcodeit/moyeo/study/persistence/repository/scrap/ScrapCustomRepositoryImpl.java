@@ -1,9 +1,9 @@
 package com.justcodeit.moyeo.study.persistence.repository.scrap;
 
-import com.justcodeit.moyeo.study.model.inquiry.PostSkillQueryDto;
-import com.justcodeit.moyeo.study.model.inquiry.QPostSkillQueryDto;
+import com.justcodeit.moyeo.study.interfaces.dto.scrap.PostSkillResponseDto;
 import com.justcodeit.moyeo.study.model.inquiry.QScrapQueryDto;
 import com.justcodeit.moyeo.study.model.inquiry.ScrapQueryDto;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -43,8 +43,9 @@ public class ScrapCustomRepositoryImpl implements ScrapCustomRepository {
 
     List<Long> postIds = extractPostIds(scrapDtoList);
 
-    List<PostSkillQueryDto> postSkillDtoList = queryFactory
-            .select(new QPostSkillQueryDto(
+    List<PostSkillResponseDto> postSkillDtoList = queryFactory
+            .select(Projections.constructor(
+                    PostSkillResponseDto.class,
                     postSkill.id,
                     post.id,
                     skill.id,
@@ -74,13 +75,13 @@ public class ScrapCustomRepositoryImpl implements ScrapCustomRepository {
             .collect(Collectors.toList());
   }
 
-  private void combineIntoOne(List<ScrapQueryDto> scrapDtoList, List<PostSkillQueryDto> postSkillDtoList) {
-    Map<Long, List<PostSkillQueryDto>> postSkillDtoListMap = postSkillDtoList.stream()
-            .collect(Collectors.groupingBy(PostSkillQueryDto::getPostId));
+  private void combineIntoOne(List<ScrapQueryDto> scrapDtoList, List<PostSkillResponseDto> postSkillDtoList) {
+    Map<Long, List<PostSkillResponseDto>> postSkillDtoListMap = postSkillDtoList.stream()
+            .collect(Collectors.groupingBy(PostSkillResponseDto::getPostId));
 
     postSkillDtoListMap.forEach((postId, dtos) -> {
         if (dtos.size() > 3) {
-            List<PostSkillQueryDto> subDtos = new ArrayList<>(dtos.subList(0, 3));
+            List<PostSkillResponseDto> subDtos = new ArrayList<>(dtos.subList(0, 3));
             postSkillDtoListMap.put(postId, subDtos);
         }
     });

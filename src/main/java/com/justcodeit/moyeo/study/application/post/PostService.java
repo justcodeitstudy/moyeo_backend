@@ -1,10 +1,10 @@
 package com.justcodeit.moyeo.study.application.post;
 
 import com.justcodeit.moyeo.study.application.skill.exception.SkillCannotFoundException;
-import com.justcodeit.moyeo.study.interfaces.dto.post.CardResDto;
 import com.justcodeit.moyeo.study.interfaces.dto.post.PostCreateReqDto;
 import com.justcodeit.moyeo.study.interfaces.dto.post.PostResDto;
 import com.justcodeit.moyeo.study.interfaces.dto.post.PostSearchCondition;
+import com.justcodeit.moyeo.study.interfaces.dto.post.PostSimpleResponseDto;
 import com.justcodeit.moyeo.study.interfaces.dto.post.RecruitmentStatusReqDto;
 import com.justcodeit.moyeo.study.interfaces.mapper.PostMapper;
 import com.justcodeit.moyeo.study.model.inquiry.PostQueryDto;
@@ -77,7 +77,9 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<PostQueryDto> findPostListByUser(String userId) {
-        return postRepository.findPostListByUserId(userId);
+    public List<PostSimpleResponseDto> findPostListByUser(String userId) {
+        return postRepository.findPostListByUserId(userId).stream()
+                .map(dto -> new PostSimpleResponseDto(dto.getPostId(), dto.getTitle(), dto.getCreatedAt(), dto.getViewCount(), dto.getIsScrapped(), dto.getPostSkills()))
+                .collect(Collectors.toList());
     }
 }

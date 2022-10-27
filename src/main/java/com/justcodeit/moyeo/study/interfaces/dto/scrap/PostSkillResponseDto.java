@@ -1,14 +1,15 @@
-package com.justcodeit.moyeo.study.model.inquiry;
+package com.justcodeit.moyeo.study.interfaces.dto.scrap;
 
-import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Schema(name = "postSkillQueryDto", description = "모집글 하나의 스킬 이름 리스트 조회용 dto")
 @Getter
 @NoArgsConstructor
-public class PostSkillQueryDto {
+@AllArgsConstructor
+public class PostSkillResponseDto {
 
   @Schema(description = "PostSkill 테이블 id 값")
   private Long id;
@@ -21,12 +22,4 @@ public class PostSkillQueryDto {
 
   @Schema(description = "스킬 이름")
   private String name;
-
-  @QueryProjection
-  public PostSkillQueryDto(Long id, Long postId, Long skillId, String name) {
-    this.id = id;
-    this.postId = postId;
-    this.skillId = skillId;
-    this.name = name;
-  }
 }
