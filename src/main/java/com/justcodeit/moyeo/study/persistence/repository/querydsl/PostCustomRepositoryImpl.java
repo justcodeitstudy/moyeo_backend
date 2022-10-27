@@ -9,7 +9,6 @@ import com.justcodeit.moyeo.study.model.inquiry.QPostSkillQueryDto;
 import com.justcodeit.moyeo.study.model.post.PostStatus;
 import com.justcodeit.moyeo.study.model.post.RecruitStatus;
 import com.justcodeit.moyeo.study.persistence.Post;
-import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -43,15 +42,17 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
 
     @Override
     public Post findByIdCustom(Long id) {
-        return Optional.of(jpaQueryFactory.selectFrom(post)
-                .leftJoin(recruitment)
-                .on(recruitment.post.id.eq(post.id))
-                .leftJoin(postSkill)
-                .on(postSkill.post.id.eq(post.id))
-                .where(post.id.eq(id))
-                .fetchJoin()
-                .fetchOne()
-        ).orElseThrow(PostCannotFoundException::new);
+        Optional<Post> resultPost = Optional.ofNullable(
+                jpaQueryFactory.selectFrom(post)
+                    .leftJoin(recruitment)
+                    .on(recruitment.post.id.eq(post.id))
+                    .leftJoin(postSkill)
+                    .on(postSkill.post.id.eq(post.id))
+                    .where(post.id.eq(id))
+                    .fetchJoin()
+                    .fetchOne()
+        );
+        return resultPost.orElseThrow(() -> new PostCannotFoundException());
     }
 
     @Override
@@ -88,7 +89,7 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
                 .select(new QPostQueryDto(
                         post.id,
                         post.title,
-                        post.createDate,
+                        post.createdAt,
                         post.viewCount,
                         new CaseBuilder()
                                 .when(scrap.isNotNull().and(scrap.userId.eq(userId)))
@@ -135,13 +136,13 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
                 .select(new QPostQueryDto(
                         post.id,
                         post.title,
-                        post.createDate,
+                        post.createdAt,
                         post.viewCount,
                         null
                 ))
                 .from(post)
                 .where(post.userId.eq(userId), post.postStatus.eq(PostStatus.NORMAL))
-                .orderBy(post.createDate.desc())
+                .orderBy(post.createdAt.desc())
                 .fetch();
 
         List<Long> postIds = extractPostIds(postDtoList);
@@ -184,8 +185,8 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
             String title = postSearchReqDto.getTitle();
             expression = expression.and(post.title.like(title + "%"));
         }
-        if(postSearchReqDto.getRecruitStatus() != null) {
-            RecruitStatus recruitStatus = postSearchReqDto.getRecruitStatus();
+        if(postSearchReqDto.getStatus() != null) {
+            RecruitStatus recruitStatus = postSearchReqDto.getStatus();
             expression = expression.and(post.recruitStatus.eq(recruitStatus));
         }
         if(postSearchReqDto.getSkillList() != null && postSearchReqDto.getSkillList().size() != 0) {

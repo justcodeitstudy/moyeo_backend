@@ -17,7 +17,6 @@ public class RecruitmentDto {
     private RecruitType recruitType;
 
     @Schema(description = "모집 인원", required = true)
-    @Min(value = 2)
     @Max(value = 10)
     private int recruitPeopleNum;
 }
