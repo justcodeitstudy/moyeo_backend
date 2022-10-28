@@ -54,9 +54,9 @@ public class Post {
     private long viewCount;
     private String userId;
     @CreatedDate
-    private LocalDateTime createDate;
+    private LocalDateTime createdAt;
     @LastModifiedDate
-    private LocalDateTime modifyDate;
+    private LocalDateTime modifyAt;
 
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Recruitment> recruitmentList = new ArrayList<>(); // 모집 분야

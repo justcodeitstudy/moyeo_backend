@@ -1,5 +1,6 @@
 package com.justcodeit.moyeo.study.application.post;
 
+import com.justcodeit.moyeo.study.application.post.exception.PostCannotFoundException;
 import com.justcodeit.moyeo.study.application.skill.exception.SkillCannotFoundException;
 import com.justcodeit.moyeo.study.interfaces.dto.post.PostCreateReqDto;
 import com.justcodeit.moyeo.study.interfaces.dto.post.PostResDto;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,7 +55,7 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public PostResDto findPost(Long id) {
-        Post post = postRepository.findByIdCustom(id);
+        Post post = postRepository.findByIdCustom(id).orElseThrow(PostCannotFoundException::new);
         return PostMapper.INSTANCE.entityToDto(post);
     }
 
@@ -65,7 +67,7 @@ public class PostService {
     @Transactional
     public void postRecruitStatusChange(Long postId, String userId, RecruitmentStatusReqDto recruitmentStatusReqDto) {
         isWriter(postId, userId);
-        Post post = postRepository.findByIdCustom(postId);
+        Post post = postRepository.findByIdCustom(postId).orElseThrow(PostCannotFoundException::new);
         post.changeRecruitStatus(recruitmentStatusReqDto.getStatus());
     }
 

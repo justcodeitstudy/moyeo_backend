@@ -41,16 +41,17 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Post findByIdCustom(Long id) {
-        return Optional.of(jpaQueryFactory.selectFrom(post)
-                .leftJoin(recruitment)
-                .on(recruitment.post.id.eq(post.id))
-                .leftJoin(postSkill)
-                .on(postSkill.post.id.eq(post.id))
-                .where(post.id.eq(id))
-                .fetchJoin()
-                .fetchOne()
-        ).orElseThrow(PostCannotFoundException::new);
+    public Optional<Post> findByIdCustom(Long id) {
+        return Optional.ofNullable(
+                jpaQueryFactory.selectFrom(post)
+                        .leftJoin(recruitment)
+                        .on(recruitment.post.id.eq(post.id))
+                        .leftJoin(postSkill)
+                        .on(postSkill.post.id.eq(post.id))
+                        .where(post.id.eq(id))
+                        .fetchJoin()
+                        .fetchOne()
+        );
     }
 
     @Override
@@ -87,7 +88,7 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
                 .select(new QPostQueryDto(
                         post.id,
                         post.title,
-                        post.createDate,
+                        post.createdAt,
                         post.viewCount,
                         new CaseBuilder()
                                 .when(scrap.isNotNull().and(scrap.userId.eq(userId)))
@@ -135,13 +136,13 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
                 .select(new QPostQueryDto(
                         post.id,
                         post.title,
-                        post.createDate,
+                        post.createdAt,
                         post.viewCount,
                         null
                 ))
                 .from(post)
                 .where(post.userId.eq(userId), post.postStatus.eq(PostStatus.NORMAL))
-                .orderBy(post.createDate.desc())
+                .orderBy(post.createdAt.desc())
                 .fetch();
 
         List<Long> postIds = extractPostIds(postDtoList);
@@ -185,8 +186,8 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
             String title = postSearchReqDto.getTitle();
             expression = expression.and(post.title.like(title + "%"));
         }
-        if(postSearchReqDto.getRecruitStatus() != null) {
-            RecruitStatus recruitStatus = postSearchReqDto.getRecruitStatus();
+        if(postSearchReqDto.getStatus() != null) {
+            RecruitStatus recruitStatus = postSearchReqDto.getStatus();
             expression = expression.and(post.recruitStatus.eq(recruitStatus));
         }
         if(postSearchReqDto.getSkillList() != null && postSearchReqDto.getSkillList().size() != 0) {

@@ -32,7 +32,7 @@ public class ScrapCustomRepositoryImpl implements ScrapCustomRepository {
                     scrap.id,
                     post.id,
                     post.title,
-                    post.createDate,
+                    post.createdAt,
                     post.viewCount
             ))
             .from(scrap)

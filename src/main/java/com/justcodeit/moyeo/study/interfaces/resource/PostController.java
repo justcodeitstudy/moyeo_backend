@@ -13,15 +13,18 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +37,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @Tag(name = "모집글", description = "모집글 CRUD API.")
 @RestController
@@ -67,22 +69,30 @@ public class PostController {
                     content = @Content(schema = @Schema(implementation = FailureRes.class)))
     })
     @GetMapping("/{id}")
-    public PostResDto findPostById(@PathVariable Long id) {
+    public PostResDto findPostById(@PathVariable(name = "id") Long id) {
         return postService.findPost(id);
     }
 
     @Operation(summary = "모집글 전체 목록", description = "모집글 List 조회")
     @Parameters(value = {
+            @Parameter(name = "page", description = "현재 페이지. 0이상 정수",
+                    in = ParameterIn.QUERY,
+                    content = @Content(schema = @Schema(type = "integer", defaultValue = "0")), required = true),
+            @Parameter(name = "size", description = "한 page 크기. 기본값 20. 0이상 정수.",
+                    in = ParameterIn.QUERY,
+                    content = @Content(schema = @Schema(type = "integer", defaultValue = "20")), required = false),
+            @Parameter(name = "sort", description = "정렬 기준. 정렬기준이 여러개라면 sort=정렬기준,(ASC|DESC)&...으로 사용",
+                    content = @Content(array = @ArraySchema(schema = @Schema(type = "string"))), required = false),
             @Parameter(name = "X-MOYEO-AUTH-TOKEN", description = "JWT 토큰",
                     in = ParameterIn.HEADER, required = false)
     })
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "success",
-                    content = @Content(schema = @Schema(implementation = PostQueryDto.class)))
+            @ApiResponse(responseCode = "200", description = "success")
     })
     @GetMapping
-    public Page<PostQueryDto> findPostAll(Pageable pageable, @Parameter(hidden = true) @AuthenticationPrincipal UserToken userToken,
-                                          @Parameter(description = "검색 조건", required = false) @ModelAttribute PostSearchCondition searchCondition) {
+    public Page<PostQueryDto> findPostAll(@Parameter(hidden = true) @PageableDefault(size = 20) Pageable pageable,
+                                          @Parameter(hidden = true) @AuthenticationPrincipal UserToken userToken,
+                                          @ParameterObject @ModelAttribute PostSearchCondition searchCondition) {
         String userId = "";
         if(userToken != null) {
             userId = userToken.getUserId();
