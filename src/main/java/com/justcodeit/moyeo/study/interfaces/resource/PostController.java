@@ -111,7 +111,9 @@ public class PostController {
     })
     @PatchMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public void postRecruitStatusChange(@PathVariable(name = "id") Long postId, @RequestBody RecruitmentStatusReqDto recruitmentStatusReqDto, @AuthenticationPrincipal UserToken userToken) {
+    public void postRecruitStatusChange(@PathVariable(name = "id") Long postId,
+                                        @RequestBody RecruitmentStatusReqDto recruitmentStatusReqDto,
+                                        @Parameter(hidden = true) @AuthenticationPrincipal UserToken userToken) {
         postService.postRecruitStatusChange(postId, userToken.getUserId(), recruitmentStatusReqDto);
     }
 }
