@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Schema(name = "postResDto", description = "모집글 단건 조회시 반환하는 정보 객체")
@@ -24,4 +25,5 @@ public class PostResDto {
     private RecruitStatus recruitStatus;
     private List<RecruitmentDto> recruitmentList;
     private List<PostSkillResDto> postSkills;
+    private LocalDateTime createdAt;
 }
