@@ -41,18 +41,17 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Post findByIdCustom(Long id) {
-        Optional<Post> resultPost = Optional.ofNullable(
+    public Optional<Post> findByIdCustom(Long id) {
+        return Optional.ofNullable(
                 jpaQueryFactory.selectFrom(post)
-                    .leftJoin(recruitment)
-                    .on(recruitment.post.id.eq(post.id))
-                    .leftJoin(postSkill)
-                    .on(postSkill.post.id.eq(post.id))
-                    .where(post.id.eq(id))
-                    .fetchJoin()
-                    .fetchOne()
+                        .leftJoin(recruitment)
+                        .on(recruitment.post.id.eq(post.id))
+                        .leftJoin(postSkill)
+                        .on(postSkill.post.id.eq(post.id))
+                        .where(post.id.eq(id))
+                        .fetchJoin()
+                        .fetchOne()
         );
-        return resultPost.orElseThrow(() -> new PostCannotFoundException());
     }
 
     @Override
