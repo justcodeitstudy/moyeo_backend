@@ -98,4 +98,8 @@ public class Post {
     public void changeRecruitStatus(RecruitStatus recruitStatus) {
         this.recruitStatus = recruitStatus;
     }
+
+    public void delete() {
+        this.postStatus = PostStatus.DELETE;
+    }
 }
