@@ -36,8 +36,6 @@ public class ProviderUserInfo {
       Map<String, Object> attributes) {
     if ("kakao".equals(registrationId)) {
       return ofKakao("id", userId, attributes);
-    } else if ("github".equals(registrationId)) {
-      return ofGithub("id", userId, attributes);
     }
     return ofGoogle(userNameAttributeName, userId, attributes);
   }
