@@ -87,7 +87,7 @@ public class PostService {
     @Transactional(readOnly = true)
     public List<PostSimpleResponseDto> findPostListByUser(String userId) {
         return postRepository.findPostListByUserId(userId).stream()
-                .map(dto -> new PostSimpleResponseDto(dto.getPostId(), dto.getTitle(), dto.getCreatedAt(), dto.getViewCount(), dto.getIsScrapped(), dto.getPostSkills()))
+                .map(dto -> new PostSimpleResponseDto(dto.getPostId(), dto.getTitle(), dto.getCreatedAt(), dto.getViewCount(), dto.getIsScrapped(), dto.getSkillList()))
                 .collect(Collectors.toList());
     }
 }

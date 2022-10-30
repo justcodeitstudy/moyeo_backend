@@ -1,6 +1,5 @@
 package com.justcodeit.moyeo.study.persistence.repository.querydsl;
 
-import com.justcodeit.moyeo.study.application.post.exception.PostCannotFoundException;
 import com.justcodeit.moyeo.study.interfaces.dto.post.PostSearchCondition;
 import com.justcodeit.moyeo.study.interfaces.dto.scrap.PostSkillResponseDto;
 import com.justcodeit.moyeo.study.model.inquiry.PostQueryDto;
@@ -228,6 +227,6 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
             }
         });
 
-        postDtoList.forEach(postQueryDto -> postQueryDto.setPostSkills(postSkillDtoListMap.get(postQueryDto.getPostId())));
+        postDtoList.forEach(postQueryDto -> postQueryDto.setSkillList(postSkillDtoListMap.get(postQueryDto.getPostId())));
     }
 }
