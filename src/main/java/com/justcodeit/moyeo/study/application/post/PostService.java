@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -69,6 +68,13 @@ public class PostService {
         isWriter(postId, userId);
         Post post = postRepository.findByIdCustom(postId).orElseThrow(PostCannotFoundException::new);
         post.changeRecruitStatus(recruitmentStatusReqDto.getStatus());
+    }
+
+    @Transactional
+    public void postDelete(Long postId, String userId) {
+        isWriter(postId, userId);
+        Post post = postRepository.findByIdCustom(postId).orElseThrow(PostCannotFoundException::new);
+        post.delete();
     }
 
     private void isWriter(Long postId, String userId) {

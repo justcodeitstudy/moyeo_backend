@@ -27,6 +27,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -116,6 +117,24 @@ public class PostController {
     @PreAuthorize("hasRole('ROLE_USER')")
     public void postRecruitStatusChange(@PathVariable(name = "id") Long postId, @RequestBody RecruitmentStatusReqDto recruitmentStatusReqDto, @AuthenticationPrincipal UserToken userToken) {
         postService.postRecruitStatusChange(postId, userToken.getUserId(), recruitmentStatusReqDto);
+    }
+
+    @Operation(summary = "모집글 삭제", description = "자신이 작성한 모집글 삭제")
+    @Parameters(value = {
+            @Parameter(name = "id", description = "모집글 번호", in = ParameterIn.PATH, required = true),
+            @Parameter(name = "X-MOYEO-AUTH-TOKEN", description = "JWT 토큰", in = ParameterIn.HEADER, required = true)
+    })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "success"),
+            @ApiResponse(responseCode = "401", description = "401 Unauthorized",
+                    content = @Content(schema = @Schema(implementation = FailureRes.class))
+            )
+    })
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public void postDelete(@PathVariable(name = "id") Long postId,
+                           @Parameter(hidden = true) @AuthenticationPrincipal UserToken userToken) {
+        postService.postDelete(postId, userToken.getUserId());
     }
 
     @Operation(summary = "자신이 작성한 모집글 리스트 조회", description = "로그인한 유저 자신이 작성한 모집글 리스트 조회")
