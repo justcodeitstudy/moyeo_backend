@@ -30,7 +30,7 @@ public class PostQueryDto {
   private Boolean isScrapped;
 
   @Schema(description = "모집글 스킬 조회 dto 리스트")
-  private List<PostSkillResponseDto> postSkills;
+  private List<PostSkillResponseDto> skillList;
 
   @QueryProjection
   public PostQueryDto(Long postId, String title, LocalDateTime createdAt, Long viewCount, Boolean isScrapped) {
@@ -41,7 +41,7 @@ public class PostQueryDto {
     this.isScrapped = isScrapped;
   }
 
-  public void setPostSkills(List<PostSkillResponseDto> postSkills) {
-    this.postSkills = postSkills;
+  public void setSkillList(List<PostSkillResponseDto> skillList) {
+    this.skillList = skillList;
   }
 }
