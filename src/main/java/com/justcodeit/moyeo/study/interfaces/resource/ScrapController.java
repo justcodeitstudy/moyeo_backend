@@ -38,8 +38,8 @@ public class ScrapController {
 
   @Operation(summary = "북마크 생성", description = "로그인한 유저의 하나의 모집글에 대한 북마크 생성")
   @Parameter(name = "X-MOYEO-AUTH-TOKEN", in = ParameterIn.HEADER, required = true)
-  @PostMapping
-  public ResponseEntity<Void> createScrap(@Parameter(hidden = true) @AuthenticationPrincipal UserToken userToken, @RequestParam String postId) {
+  @PostMapping("/{postId}")
+  public ResponseEntity<Void> createScrap(@Parameter(hidden = true) @AuthenticationPrincipal UserToken userToken, @PathVariable String postId) {
     scrapService.makeScrap(userToken.getUserId(), Long.valueOf(postId));
     return new ResponseEntity<>(HttpStatus.OK);
   }
