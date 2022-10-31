@@ -1,5 +1,6 @@
 package com.justcodeit.moyeo.study.model.inquiry;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.justcodeit.moyeo.study.interfaces.dto.scrap.PostSkillResponseDto;
 import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,6 +21,7 @@ public class PostQueryDto {
   @Schema(description = "모집글 제목")
   private String title;
 
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
   @Schema(description = "모집글 생성일")
   private LocalDateTime createdAt;
 
