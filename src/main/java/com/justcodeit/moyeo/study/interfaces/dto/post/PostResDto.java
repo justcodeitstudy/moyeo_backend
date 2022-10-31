@@ -1,5 +1,6 @@
 package com.justcodeit.moyeo.study.interfaces.dto.post;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.justcodeit.moyeo.study.interfaces.dto.postskill.PostSkillResDto;
 import com.justcodeit.moyeo.study.interfaces.dto.recruitment.RecruitmentDto;
 import com.justcodeit.moyeo.study.model.post.RecruitStatus;
@@ -24,6 +25,7 @@ public class PostResDto {
     private PostType postType;
     private RecruitStatus recruitStatus;
     private List<RecruitmentDto> recruitmentList;
+    @JsonProperty(value = "skillList")
     private List<PostSkillResDto> postSkills;
     private LocalDateTime createdAt;
 }
