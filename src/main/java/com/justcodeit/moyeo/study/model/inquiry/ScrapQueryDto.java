@@ -1,5 +1,6 @@
 package com.justcodeit.moyeo.study.model.inquiry;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.justcodeit.moyeo.study.interfaces.dto.scrap.PostSkillResponseDto;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
@@ -17,6 +18,8 @@ public class ScrapQueryDto {
   private String title;
   private LocalDateTime createdAt;
   private Long viewCount;
+
+  @JsonProperty(value = "skillList")
   private List<PostSkillResponseDto> postSkills;
 
   @QueryProjection

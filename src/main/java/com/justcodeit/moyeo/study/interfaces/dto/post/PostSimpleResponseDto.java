@@ -1,5 +1,6 @@
 package com.justcodeit.moyeo.study.interfaces.dto.post;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.justcodeit.moyeo.study.interfaces.dto.scrap.PostSkillResponseDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -30,6 +31,7 @@ public class PostSimpleResponseDto {
   @Schema(description = "모집글 북마크 여부")
   private Boolean isScrapped;
 
+  @JsonProperty(value = "skillList")
   @Schema(description = "모집글 스킬 조회 dto 리스트")
   private List<PostSkillResponseDto> postSkills;
 }
