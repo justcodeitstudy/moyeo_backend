@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -119,6 +120,20 @@ public class PostController {
                                         @RequestBody RecruitmentStatusReqDto recruitmentStatusReqDto,
                                         @Parameter(hidden = true) @AuthenticationPrincipal UserToken userToken) {
         postService.postRecruitStatusChange(postId, userToken.getUserId(), recruitmentStatusReqDto);
+    }
+    @Operation(summary = "모집글 수정", description = "모집글의 내용을 변경한다.", hidden = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "success"),
+            @ApiResponse(responseCode = "401", description = "401 Unauthorized",
+                    content = @Content(schema = @Schema(implementation = FailureRes.class))
+            )
+    })
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public void postModify(@PathVariable(name = "id") Long postId,
+                            @RequestBody @Valid PostCreateReqDto postCreateRequestDto,
+                            @Parameter(hidden = true) @AuthenticationPrincipal UserToken userToken) {
+        postService.postModify(postId, userToken.getUserId(), postCreateRequestDto);
     }
 
     @Operation(summary = "모집글 삭제", description = "자신이 작성한 모집글 삭제")

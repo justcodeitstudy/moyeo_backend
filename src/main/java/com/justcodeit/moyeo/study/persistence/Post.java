@@ -1,5 +1,6 @@
 package com.justcodeit.moyeo.study.persistence;
 
+import com.justcodeit.moyeo.study.interfaces.dto.post.PostCreateReqDto;
 import com.justcodeit.moyeo.study.interfaces.dto.recruitment.RecruitmentDto;
 import com.justcodeit.moyeo.study.interfaces.mapper.RecruitmentMapper;
 import com.justcodeit.moyeo.study.model.post.PostStatus;
@@ -82,9 +83,19 @@ public class Post {
         this.postStatus = PostStatus.NORMAL;
         this.recruitStatus = RecruitStatus.RECRUITING;
     }
+
+    public void modify(PostCreateReqDto postCreateReqDto) {
+        this.title = postCreateReqDto.getTitle();
+        this.content = postCreateReqDto.getContent();
+        this.postType = postCreateReqDto.getPostType();
+        this.progressType = postCreateReqDto.getProgressType();
+        this.contactInfo = postCreateReqDto.getContactInfo();
+        this.modifyAt = LocalDateTime.now();
+    }
     private void viewCountIncrease() {
         this.viewCount += 1;
     }
+
     public void setRecruitmentList(List<RecruitmentDto> recruitmentDtoList) {
         List<Recruitment> recruitmentList = RecruitmentMapper.INSTANCE
                                                 .reqDtoListToEntityList(recruitmentDtoList);

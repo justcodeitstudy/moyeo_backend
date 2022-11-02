@@ -13,6 +13,8 @@ import com.justcodeit.moyeo.study.model.post.PostStatus;
 import com.justcodeit.moyeo.study.persistence.Post;
 import com.justcodeit.moyeo.study.persistence.PostSkill;
 import com.justcodeit.moyeo.study.persistence.repository.PostRepository;
+import com.justcodeit.moyeo.study.persistence.repository.PostSkillRepository;
+import com.justcodeit.moyeo.study.persistence.repository.RecruitmentRepository;
 import com.justcodeit.moyeo.study.persistence.repository.SkillRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -30,6 +32,8 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final SkillRepository skillRepository;
+    private final PostSkillRepository postSkillRepository;
+    private final RecruitmentRepository recruitmentRepository;
     @Transactional
     public Long createPost(PostCreateReqDto postCreateReqDto, String userId) {
         PostMapper postMapper = PostMapper.INSTANCE;
@@ -68,6 +72,27 @@ public class PostService {
         isWriter(postId, userId);
         Post post = postRepository.findByIdCustom(postId).orElseThrow(PostCannotFoundException::new);
         post.changeRecruitStatus(recruitmentStatusReqDto.getStatus());
+    }
+
+    @Transactional
+    public void postModify(Long postId, String userId, PostCreateReqDto postCreateReqDto) {
+        isWriter(postId, userId);
+        Post post = postRepository.findByIdCustom(postId).orElseThrow(PostCannotFoundException::new);
+
+        List<PostSkill> postSkills = postCreateReqDto.getSkillIdList()
+                .stream()
+                .map( skillId ->
+                        new PostSkill(
+                                post,
+                                skillRepository.findById(skillId).orElseThrow(SkillCannotFoundException::new)
+                        )
+                )
+                .collect(Collectors.toList());
+        postSkillRepository.deleteAllByPostId(postId);
+        recruitmentRepository.deleteByPostId(postId);
+        post.setRecruitmentList(postCreateReqDto.getRecruitmentList());
+        post.setPostSkills(postSkills);
+        post.modify(postCreateReqDto);
     }
 
     @Transactional
