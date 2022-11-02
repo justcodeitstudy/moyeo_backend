@@ -56,6 +56,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .authenticationEntryPoint(authenticationEntryPoint) // 인증문제 발생시 처리
         .and()
         .oauth2Login()
+        .authorizationEndpoint()
+        .baseUri("/oauth2/authorization")
+        .and()
+        .redirectionEndpoint()
+        .baseUri("/oauth2/callback/*")
+        .and()
         .userInfoEndpoint().userService(oAuthUserService) //oauth 인증후 처리
         .and()
         .successHandler(oAuth2AuthenticationSuccessHandler);
