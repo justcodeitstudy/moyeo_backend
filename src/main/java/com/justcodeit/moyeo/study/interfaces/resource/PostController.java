@@ -122,6 +122,10 @@ public class PostController {
         postService.postRecruitStatusChange(postId, userToken.getUserId(), recruitmentStatusReqDto);
     }
     @Operation(summary = "모집글 수정", description = "모집글의 내용을 변경한다.")
+    @Parameters(value = {
+            @Parameter(name = "id", description = "모집글 번호", in = ParameterIn.PATH, required = true),
+            @Parameter(name = "X-MOYEO-AUTH-TOKEN", description = "JWT 토큰", in = ParameterIn.HEADER, required = true)
+    })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "success"),
             @ApiResponse(responseCode = "401", description = "401 Unauthorized",
@@ -131,7 +135,7 @@ public class PostController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public void postModify(@PathVariable(name = "id") Long postId,
-                            @RequestBody @Valid PostCreateReqDto postCreateRequestDto,
+                            @Parameter(hidden = true) @RequestBody @Valid PostCreateReqDto postCreateRequestDto,
                             @Parameter(hidden = true) @AuthenticationPrincipal UserToken userToken) {
         postService.postModify(postId, userToken.getUserId(), postCreateRequestDto);
     }
