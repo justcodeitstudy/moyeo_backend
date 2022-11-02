@@ -121,7 +121,7 @@ public class PostController {
                                         @Parameter(hidden = true) @AuthenticationPrincipal UserToken userToken) {
         postService.postRecruitStatusChange(postId, userToken.getUserId(), recruitmentStatusReqDto);
     }
-    @Operation(summary = "모집글 수정", description = "모집글의 내용을 변경한다.", hidden = true)
+    @Operation(summary = "모집글 수정", description = "모집글의 내용을 변경한다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "success"),
             @ApiResponse(responseCode = "401", description = "401 Unauthorized",
