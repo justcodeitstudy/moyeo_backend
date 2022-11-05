@@ -1,9 +1,9 @@
-package com.justcodeit.moyeo.study.model.inquiry;
+package com.justcodeit.moyeo.study.interfaces.dto.post;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.justcodeit.moyeo.study.interfaces.dto.scrap.PostSkillResponseDto;
-import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +13,8 @@ import java.util.List;
 @Schema(name = "postQueryDto", description = "모집글 리스트 조회용 dto")
 @Getter
 @NoArgsConstructor
-public class PostQueryDto {
+@AllArgsConstructor
+public class PostSimpleResponseDto {
 
   @Schema(description = "모집글 id 값")
   private Long postId;
@@ -21,7 +22,6 @@ public class PostQueryDto {
   @Schema(description = "모집글 제목")
   private String title;
 
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
   @Schema(description = "모집글 생성일")
   private LocalDateTime createdAt;
 
@@ -31,19 +31,7 @@ public class PostQueryDto {
   @Schema(description = "모집글 북마크 여부")
   private Boolean isScrapped;
 
+  @JsonProperty(value = "skillList")
   @Schema(description = "모집글 스킬 조회 dto 리스트")
-  private List<PostSkillResponseDto> skillList;
-
-  @QueryProjection
-  public PostQueryDto(Long postId, String title, LocalDateTime createdAt, Long viewCount, Boolean isScrapped) {
-    this.postId = postId;
-    this.title = title;
-    this.createdAt = createdAt;
-    this.viewCount = viewCount;
-    this.isScrapped = isScrapped;
-  }
-
-  public void setSkillList(List<PostSkillResponseDto> skillList) {
-    this.skillList = skillList;
-  }
+  private List<PostSkillResponseDto> postSkills;
 }

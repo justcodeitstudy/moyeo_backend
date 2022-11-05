@@ -1,5 +1,6 @@
 package com.justcodeit.moyeo.study.persistence;
 
+import com.justcodeit.moyeo.study.interfaces.dto.post.PostCreateReqDto;
 import com.justcodeit.moyeo.study.interfaces.dto.recruitment.RecruitmentDto;
 import com.justcodeit.moyeo.study.interfaces.mapper.RecruitmentMapper;
 import com.justcodeit.moyeo.study.model.post.PostStatus;
@@ -54,9 +55,9 @@ public class Post {
     private long viewCount;
     private String userId;
     @CreatedDate
-    private LocalDateTime createDate;
+    private LocalDateTime createdAt;
     @LastModifiedDate
-    private LocalDateTime modifyDate;
+    private LocalDateTime modifyAt;
 
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Recruitment> recruitmentList = new ArrayList<>(); // 모집 분야
@@ -82,9 +83,19 @@ public class Post {
         this.postStatus = PostStatus.NORMAL;
         this.recruitStatus = RecruitStatus.RECRUITING;
     }
+
+    public void modify(PostCreateReqDto postCreateReqDto) {
+        this.title = postCreateReqDto.getTitle();
+        this.content = postCreateReqDto.getContent();
+        this.postType = postCreateReqDto.getPostType();
+        this.progressType = postCreateReqDto.getProgressType();
+        this.contactInfo = postCreateReqDto.getContactInfo();
+        this.modifyAt = LocalDateTime.now();
+    }
     private void viewCountIncrease() {
         this.viewCount += 1;
     }
+
     public void setRecruitmentList(List<RecruitmentDto> recruitmentDtoList) {
         List<Recruitment> recruitmentList = RecruitmentMapper.INSTANCE
                                                 .reqDtoListToEntityList(recruitmentDtoList);
@@ -97,5 +108,9 @@ public class Post {
     }
     public void changeRecruitStatus(RecruitStatus recruitStatus) {
         this.recruitStatus = recruitStatus;
+    }
+
+    public void delete() {
+        this.postStatus = PostStatus.DELETE;
     }
 }

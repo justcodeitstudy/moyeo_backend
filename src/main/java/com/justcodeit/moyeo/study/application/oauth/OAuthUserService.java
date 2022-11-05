@@ -29,7 +29,7 @@ public class OAuthUserService implements OAuth2UserService {
   public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
     log.debug(userRequest.toString());
 
-    var oAuth2User = defaultOAuth2UserService.loadUser(userRequest);
+    OAuth2User oAuth2User = defaultOAuth2UserService.loadUser(userRequest);
 
     String providerId = userRequest.getClientRegistration().getRegistrationId();
     String userNameAttributeName = userRequest.getClientRegistration()
@@ -38,16 +38,16 @@ public class OAuthUserService implements OAuth2UserService {
 
     ProviderUserInfo info = ProviderUserInfo.of(providerId, userNameAttributeName, userIdGenerator.userId(),
         oAuth2User.getAttributes());
-    var user = saveOrUpdate(info);
+    User user = saveOrUpdate(info);
 
     return UserPrincipal.create(user, oAuth2User.getAttributes());
   }
 
   private User saveOrUpdate(ProviderUserInfo info) {
-    var user = userRepository.findByDomesticIdAndProviderType(
-            info.getDomesticId(), info.getProviderType())
-        .map(e -> e.update(info.getName(), info.getPicture()))
-        .orElse(userConverter.convert(info));
+    User user = userRepository.findByDomesticIdAndProviderType(
+                    info.getDomesticId(), info.getProviderType())
+            .map(e -> e.update(info.getName(), info.getPicture()))
+            .orElse(userConverter.convert(info));
     return userRepository.save(user);
   } //github 은 email이 변경이 가능한 서비스이기 때문에 업데이트를 해주는게 맞는지...
 }
