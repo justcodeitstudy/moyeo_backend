@@ -78,9 +78,9 @@ public class PostController {
 
     @Operation(summary = "모집글 전체 목록", description = "모집글 List 조회")
     @Parameters(value = {
-            @Parameter(name = "page", description = "현재 페이지. 0이상 정수",
+            @Parameter(name = "page", description = "현재 페이지. 1이상 정수",
                     in = ParameterIn.QUERY,
-                    content = @Content(schema = @Schema(type = "integer", defaultValue = "0")), required = true),
+                    content = @Content(schema = @Schema(type = "integer", defaultValue = "1")), required = true),
             @Parameter(name = "size", description = "한 page 크기. 기본값 20. 0이상 정수.",
                     in = ParameterIn.QUERY,
                     content = @Content(schema = @Schema(type = "integer", defaultValue = "20")), required = false),
@@ -93,7 +93,7 @@ public class PostController {
             @ApiResponse(responseCode = "200", description = "success")
     })
     @GetMapping
-    public Page<PostQueryDto> findPostAll(@Parameter(hidden = true) @PageableDefault(size = 20) Pageable pageable,
+    public Page<PostQueryDto> findPostAll(@Parameter(hidden = true) Pageable pageable,
                                           @Parameter(hidden = true) @AuthenticationPrincipal UserToken userToken,
                                           @ParameterObject @ModelAttribute PostSearchCondition searchCondition) {
         String userId = "";

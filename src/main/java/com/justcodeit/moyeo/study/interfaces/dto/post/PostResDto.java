@@ -25,7 +25,6 @@ public class PostResDto {
     private PostType postType;
     private RecruitStatus recruitStatus;
     private List<RecruitmentDto> recruitmentList;
-    @JsonProperty(value = "skillList")
-    private List<PostSkillResDto> postSkills;
+    private List<Long> skillIds;
     private LocalDateTime createdAt;
 }

@@ -11,9 +11,10 @@ import org.mapstruct.factory.Mappers;
 public interface PostSkillMapper {
     PostSkillMapper INSTANCE = Mappers.getMapper(PostSkillMapper.class);
 
-    @Mapping(target = "skillId", source = "skill.id")
+    @Mapping(target = "id", source = "skill.id")
+    @Mapping(target = "name", ignore = true)
     PostSkillResDto entityToDto(PostSkill postSkill);
-    @Mapping(source = "postSkill.skill.id", target = "id")
-    @Mapping(source = "postSkill.skill.name", target = "name")
+    @Mapping(target = "id", source = "postSkill.skill.id")
+    @Mapping(target = "name", source = "postSkill.skill.name")
     CardSkillDto entityToCardResDto(PostSkill postSkill);
 }
