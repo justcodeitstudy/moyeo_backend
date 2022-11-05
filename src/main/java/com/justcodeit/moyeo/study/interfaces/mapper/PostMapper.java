@@ -1,6 +1,5 @@
 package com.justcodeit.moyeo.study.interfaces.mapper;
 
-import com.justcodeit.moyeo.study.interfaces.dto.post.CardResDto;
 import com.justcodeit.moyeo.study.interfaces.dto.post.PostCreateReqDto;
 import com.justcodeit.moyeo.study.interfaces.dto.post.PostResDto;
 import com.justcodeit.moyeo.study.persistence.Post;
@@ -17,10 +16,12 @@ public interface PostMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "postSkills", ignore = true)
     @Mapping(target = "recruitmentList", ignore = true)
+    @Mapping(target = "recruitStatus", ignore = true)
+    @Mapping(target = "postStatus", ignore = true)
     Post createReqDtoToEntity(PostCreateReqDto postCreateReqDto);
+
+    @Mapping(target = "skillIds", ignore = true)
     PostResDto entityToDto(Post post);
-    CardResDto entityListToCardResDtoList(Post post);
-    @Mapping(target = "isScrap", ignore = true)
-    List<CardResDto> entityListToCardResDtoList(List<Post> post);
+
     List<PostResDto> entityListToDtoList(List<Post> postList);
 }
