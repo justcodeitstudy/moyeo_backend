@@ -48,5 +48,5 @@ public class PostCreateReqDto {
     @Schema(description = "기술 스택 ID 목록", required = true)
     @Valid
     @Size(min = 1, max = 10)
-    private List<Long> skillIdList;
+    private List<Long> skillIds;
 }

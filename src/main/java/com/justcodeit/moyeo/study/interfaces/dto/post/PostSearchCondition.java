@@ -19,5 +19,5 @@ public class PostSearchCondition {
     @Schema(description = "모집상태", defaultValue = "RECRUITING")
     private RecruitStatus status;
     @Parameter(description = "기술스택 ID 배열", example = "[1, 6, 11, 55]", content = @Content(array = @ArraySchema(schema = @Schema(type = "int",format = "int64"))))
-    private List<Long> skillList;
+    private List<Long> skillIds;
 }

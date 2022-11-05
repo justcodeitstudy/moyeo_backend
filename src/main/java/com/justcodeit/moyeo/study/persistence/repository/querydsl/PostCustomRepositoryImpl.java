@@ -189,9 +189,9 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
             RecruitStatus recruitStatus = postSearchReqDto.getStatus();
             expression = expression.and(post.recruitStatus.eq(recruitStatus));
         }
-        if(postSearchReqDto.getSkillList() != null && postSearchReqDto.getSkillList().size() != 0) {
-            List<Long> skillList = postSearchReqDto.getSkillList();
-            expression = expression.andAnyOf(postSkill.skill.id.in(skillList));
+        if(postSearchReqDto.getSkillIds() != null && postSearchReqDto.getSkillIds().size() != 0) {
+            List<Long> skillIds = postSearchReqDto.getSkillIds();
+            expression = expression.andAnyOf(postSkill.skill.id.in(skillIds));
         }
         return expression;
     }

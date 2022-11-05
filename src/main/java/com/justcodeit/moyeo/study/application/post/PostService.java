@@ -41,7 +41,7 @@ public class PostService {
 
         Post post = postMapper.createReqDtoToEntity(postCreateReqDto);
         post.setRecruitmentList(postCreateReqDto.getRecruitmentList());
-        List<PostSkill> postSkills = postCreateReqDto.getSkillIdList()
+        List<PostSkill> postSkills = postCreateReqDto.getSkillIds()
                                         .stream()
                                         .map( skillId ->
                                                 new PostSkill(
@@ -59,7 +59,12 @@ public class PostService {
     @Transactional(readOnly = true)
     public PostResDto findPost(Long id) {
         Post post = postRepository.findByIdCustom(id).orElseThrow(PostCannotFoundException::new);
-        return PostMapper.INSTANCE.entityToDto(post);
+        PostResDto postResDto = PostMapper.INSTANCE.entityToDto(post);
+        List<Long> skillIds = post.getPostSkills().stream()
+                                .map(postSkill -> postSkill.getSkill().getId())
+                                .collect(Collectors.toList());
+        postResDto.setSkillIds(skillIds);
+        return postResDto;
     }
 
     @Transactional(readOnly = true)
@@ -79,7 +84,7 @@ public class PostService {
         isWriter(postId, userId);
         Post post = postRepository.findByIdCustom(postId).orElseThrow(PostCannotFoundException::new);
 
-        List<PostSkill> postSkills = postCreateReqDto.getSkillIdList()
+        List<PostSkill> postSkills = postCreateReqDto.getSkillIds()
                 .stream()
                 .map( skillId ->
                         new PostSkill(

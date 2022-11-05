@@ -9,9 +9,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PostSkillResDto {
-    @JsonIgnore
-    @Schema(description = "모집글과 기술스택의 중간 테이블의 고유값. 기술스택 수정시 필요")
+    @Schema(description = "기술스택의 고유 Id.")
     private Long id;
     @Schema(description = "기술스택의 고유값.")
-    private Long skillId;
+    private String name;
 }
