@@ -5,7 +5,7 @@ import com.justcodeit.moyeo.study.application.scrap.exception.PostAlreadyDeleted
 import com.justcodeit.moyeo.study.application.scrap.exception.PostAlreadyScrappedException;
 import com.justcodeit.moyeo.study.application.scrap.exception.ScrapCannotFoundException;
 import com.justcodeit.moyeo.study.application.scrap.exception.ScrapNotAuthorizedException;
-import com.justcodeit.moyeo.study.interfaces.dto.scrap.ScrapResponseDto;
+import com.justcodeit.moyeo.study.model.inquiry.ScrapQueryDto;
 import com.justcodeit.moyeo.study.model.post.PostStatus;
 import com.justcodeit.moyeo.study.persistence.Post;
 import com.justcodeit.moyeo.study.persistence.Scrap;
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -50,10 +49,8 @@ public class ScrapService {
   }
 
   @Transactional(readOnly = true)
-  public List<ScrapResponseDto> findScrapListByUser(String userId) {
-    return scrapRepository.findScrapListByUserId(userId).stream()
-            .map(dto -> new ScrapResponseDto(dto.getId(), dto.getPostId(), dto.getTitle(), dto.getCreatedAt(), dto.getViewCount(), dto.getPostSkills()))
-            .collect(Collectors.toList());
+  public List<ScrapQueryDto> findScrapListByUser(String userId) {
+    return scrapRepository.findScrapListByUserId(userId);
   }
 
   private void validatePostByUserId(String userId, Post post) {

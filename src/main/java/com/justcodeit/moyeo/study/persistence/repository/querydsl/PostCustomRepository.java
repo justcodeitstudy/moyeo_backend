@@ -8,10 +8,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface PostCustomRepository {
-    Optional<Post> findByIdCustom(Long id);
+    Post findByIdCustom(Long id);
     List<Post> findAllBySearchCondition(Pageable pageable, PostSearchCondition searchCondition);
     boolean existByIdAndUserIdAndPostStatusNormal(Long id, String userId, PostStatus postStatus);
     Page<PostQueryDto> findPostList(String userId, PostSearchCondition searchCondition, Pageable pageable);

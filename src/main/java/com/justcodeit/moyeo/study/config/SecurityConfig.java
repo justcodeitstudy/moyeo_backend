@@ -43,8 +43,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers("/v3/**").permitAll() // swagger-ui 관련,
         .antMatchers("/v1/**").permitAll() // swagger-ui 관련,
         .antMatchers("/swagger-ui/**").permitAll()
-        .antMatchers("/").permitAll()
-        .antMatchers("/scraps/**").hasRole("USER");
+//        .antMatchers("/**").authenticated();
+        .antMatchers("/").permitAll(); // 추후 설정합시다
 
     http.headers().defaultsDisabled().contentTypeOptions();
     http.headers().frameOptions().disable().xssProtection().block(true);

@@ -1,7 +1,6 @@
 package com.justcodeit.moyeo.study.application.skill;
 
 import com.justcodeit.moyeo.study.application.aws.s3.S3Service;
-import com.justcodeit.moyeo.study.application.skill.exception.SkillCannotFoundException;
 import com.justcodeit.moyeo.study.interfaces.dto.skill.SkillCreateRequestDto;
 import com.justcodeit.moyeo.study.interfaces.mapper.SkillMapper;
 import com.justcodeit.moyeo.study.model.skill.SkillCategoryConverter;
@@ -23,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class SkillService {
     private final SkillRepository skillRepository;
     private final S3Service s3Service;
-    @Value("${moyeo.s3EndPoint}")
+    @Value("${s3EndPoint}")
     private String S3_ENDPOINT;
 
     @Transactional(readOnly = true)
@@ -43,7 +42,7 @@ public class SkillService {
     }
 
     public SkillDto findSkillByName(String name) {
-        Skill skill = skillRepository.findByName(name).orElseThrow(SkillCannotFoundException::new);
+        Skill skill = skillRepository.findByName(name);
         return SkillMapper.SKILL_INSTANCE.entityToSkillDto(skill);
     }
 

@@ -1,9 +1,7 @@
 package com.justcodeit.moyeo.study.model.type;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
-@Schema(description = "기술 스택의 카테고리.")
 @Getter
 public enum SkillCategory {
     BACK_END("back-end", "백엔드"),

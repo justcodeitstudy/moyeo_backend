@@ -1,6 +1,5 @@
 package com.justcodeit.moyeo.study.application.scrap;
 
-import com.justcodeit.moyeo.study.interfaces.dto.scrap.ScrapResponseDto;
 import com.justcodeit.moyeo.study.model.inquiry.ScrapQueryDto;
 import com.justcodeit.moyeo.study.model.post.PostStatus;
 import com.justcodeit.moyeo.study.model.type.Role;
@@ -95,7 +94,7 @@ class ScrapServiceTest {
             .thenReturn(List.of(new ScrapQueryDto(scrap.getId(), post.getId(), "test", LocalDateTime.now(), 0L)));
 
     //when
-    List<ScrapResponseDto> result = scrapService.findScrapListByUser(user.getUserId());
+    List<ScrapQueryDto> result = scrapService.findScrapListByUser(user.getUserId());
 
     //then
     assertThat(result).isNotEmpty();

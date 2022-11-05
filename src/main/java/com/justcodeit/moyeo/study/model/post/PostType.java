@@ -9,8 +9,8 @@ import lombok.Getter;
 @Schema(description = "모집글의 종류")
 @Getter
 public enum PostType {
-    PROJECT("Project","프로젝트"),
-    STUDY("Study","스터디");
+    STUDY("Study","스터디"),
+    PROJECT("Project","프로젝트");
 
     private String engWord;
     private String korWord;
