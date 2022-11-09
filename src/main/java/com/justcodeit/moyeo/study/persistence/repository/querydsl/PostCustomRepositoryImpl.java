@@ -101,6 +101,11 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
                 .limit(pageable.getPageSize())
                 .fetch();
 
+        Long count = jpaQueryFactory.select(post.count())
+                .from(post)
+                .where(createSearchCondition(searchCondition))
+                .fetchOne();
+
         List<Long> postIds = extractPostIds(postDtoList);
 
         List<PostSkillResponseDto> postSkillDtoList = jpaQueryFactory
@@ -126,7 +131,7 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
                 .fetch();
 
         combineIntoOne(postDtoList, postSkillDtoList);
-        return new PageImpl<>(postDtoList, pageable, postDtoList.size());
+        return new PageImpl<>(postDtoList, pageable, count);
     }
 
     @Override
