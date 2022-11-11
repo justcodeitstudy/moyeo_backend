@@ -60,7 +60,7 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
                 .on(recruitment.post.id.eq(post.id))
                 .leftJoin(postSkill)
                 .on(postSkill.post.id.eq(post.id))
-                .where(gtPostId(pageable.getOffset())
+                .where(ltPostId(pageable.getOffset())
                         .and(createSearchCondition(searchCondition)))
                 .limit(pageable.getPageSize())
                 .orderBy(postSort(pageable.getSort()).toArray(OrderSpecifier[]::new))
@@ -82,7 +82,7 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
     }
 
     @Override
-    public Page<PostQueryDto> findPostList(String userId, PostSearchCondition searchCondition, Pageable pageable) {
+    public Page<PostQueryDto> findPostList(String userId, Long lastPostId, PostSearchCondition searchCondition, Pageable pageable) {
         List<PostQueryDto> postDtoList = jpaQueryFactory
                 .select(new QPostQueryDto(
                         post.id,
@@ -96,7 +96,7 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
                 ))
                 .from(post)
                 .leftJoin(scrap).on(post.id.eq(scrap.postId))
-                .where(gtPostId(pageable.getOffset()), createSearchCondition(searchCondition))
+                .where(ltPostId(lastPostId), createSearchCondition(searchCondition))
                 .orderBy(postSort(pageable.getSort()).toArray(OrderSpecifier[]::new))
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -177,11 +177,11 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
         return postDtoList;
     }
 
-    private BooleanExpression gtPostId(Long postId) {
-        if(postId == null) {
+    private BooleanExpression ltPostId(Long lastPostId) {
+        if(lastPostId == null || lastPostId == 0) {
             return null;
         }
-        return post.id.gt(postId);
+        return post.id.lt(lastPostId);
     }
     private BooleanExpression createSearchCondition(PostSearchCondition postSearchReqDto) {
         BooleanExpression expression = post.postStatus.eq(PostStatus.NORMAL);
