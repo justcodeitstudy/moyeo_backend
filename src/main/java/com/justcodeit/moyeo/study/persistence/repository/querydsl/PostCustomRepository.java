@@ -12,7 +12,6 @@ import java.util.Optional;
 
 public interface PostCustomRepository {
     Optional<Post> findByIdCustom(Long id);
-    List<Post> findAllBySearchCondition(Pageable pageable, PostSearchCondition searchCondition);
     boolean existByIdAndUserIdAndPostStatusNormal(Long id, String userId, PostStatus postStatus);
     Page<PostQueryDto> findPostList(String userId, Long lastPostId, PostSearchCondition searchCondition, Pageable pageable);
     List<PostQueryDto> findPostListByUserId(String userId);
