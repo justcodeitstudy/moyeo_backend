@@ -54,22 +54,6 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
     }
 
     @Override
-    public List<Post> findAllBySearchCondition(Pageable pageable, PostSearchCondition searchCondition) {
-        return jpaQueryFactory.selectFrom(post)
-                .leftJoin(recruitment)
-                .on(recruitment.post.id.eq(post.id))
-                .leftJoin(postSkill)
-                .on(postSkill.post.id.eq(post.id))
-                .where(ltPostId(pageable.getOffset())
-                        .and(createSearchCondition(searchCondition)))
-                .limit(pageable.getPageSize())
-                .orderBy(postSort(pageable.getSort()).toArray(OrderSpecifier[]::new))
-                .fetchJoin()
-                .distinct()
-                .fetch();
-    }
-
-    @Override
     public boolean existByIdAndUserIdAndPostStatusNormal(Long postId, String userId, PostStatus postStatus) {
         Integer postCount = jpaQueryFactory.selectOne()
                 .from(post)
@@ -82,7 +66,14 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
     }
 
     @Override
-    public Page<PostQueryDto> findPostList(String userId, Long lastPostId, PostSearchCondition searchCondition, Pageable pageable) {
+    public Page<PostQueryDto> findPostList(String userId, PostSearchCondition searchCondition, Pageable pageable) {
+        List<Post> fetch = jpaQueryFactory.selectFrom(post)
+                .leftJoin(post.postSkills, postSkill)
+                .on(postSkill.post.id.eq(post.id))
+                .where(createSearchCondition(searchCondition))
+                .distinct()
+                .fetch();
+        long count = fetch.size();
         List<PostQueryDto> postDtoList = jpaQueryFactory
                 .select(new QPostQueryDto(
                         post.id,
@@ -92,19 +83,17 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
                         new CaseBuilder()
                                 .when(scrap.isNotNull().and(scrap.userId.eq(userId)))
                                 .then(true)
-                                .otherwise(false)
+                                .otherwise(false),
+                        post.recruitStatus
                 ))
                 .from(post)
                 .leftJoin(scrap).on(post.id.eq(scrap.postId))
-                .where(ltPostId(lastPostId), createSearchCondition(searchCondition))
+                .leftJoin(post.postSkills, postSkill).on(postSkill.post.id.eq(post.id))
+                .where(loePostId(count, pageable.getOffset()), createSearchCondition(searchCondition))
                 .orderBy(postSort(pageable.getSort()).toArray(OrderSpecifier[]::new))
                 .limit(pageable.getPageSize())
+                .distinct()
                 .fetch();
-
-        Long count = jpaQueryFactory.select(post.count())
-                .from(post)
-                .where(createSearchCondition(searchCondition))
-                .fetchOne();
 
         List<Long> postIds = extractPostIds(postDtoList);
 
@@ -142,7 +131,8 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
                         post.title,
                         post.createdAt,
                         post.viewCount,
-                        null
+                        null,
+                        post.recruitStatus
                 ))
                 .from(post)
                 .where(post.userId.eq(userId), post.postStatus.eq(PostStatus.NORMAL))
@@ -177,11 +167,11 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
         return postDtoList;
     }
 
-    private BooleanExpression ltPostId(Long lastPostId) {
-        if(lastPostId == null || lastPostId == 0) {
+    private BooleanExpression loePostId(Long totalCount, Long offSet) {
+        if(offSet == null) {
             return null;
         }
-        return post.id.lt(lastPostId);
+        return post.id.loe(totalCount - offSet);
     }
     private BooleanExpression createSearchCondition(PostSearchCondition postSearchReqDto) {
         BooleanExpression expression = post.postStatus.eq(PostStatus.NORMAL);
