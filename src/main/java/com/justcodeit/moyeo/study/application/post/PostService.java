@@ -68,8 +68,8 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public Page<PostQueryDto> findPostAll(Pageable pageable, Long lastPostId, String userId, PostSearchCondition postSearchReqDto) {
-        return postRepository.findPostList(userId, lastPostId,postSearchReqDto, pageable);
+    public Page<PostQueryDto> findPostAll(Pageable pageable, String userId, PostSearchCondition postSearchReqDto) {
+        return postRepository.findPostList(userId, postSearchReqDto, pageable);
     }
 
     @Transactional

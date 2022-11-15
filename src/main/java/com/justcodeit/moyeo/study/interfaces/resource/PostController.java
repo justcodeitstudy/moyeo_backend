@@ -94,15 +94,14 @@ public class PostController {
             @ApiResponse(responseCode = "200", description = "success")
     })
     @GetMapping
-    public Page<PostQueryDto> findPostAll(@Parameter(name = "last") @RequestParam(name = "last") Long lastPostId,
-                                            @Parameter(hidden = true) Pageable pageable,
-                                            @Parameter(hidden = true) @AuthenticationPrincipal UserToken userToken,
-                                            @ParameterObject @ModelAttribute PostSearchCondition searchCondition) {
+    public Page<PostQueryDto> findPostAll(@Parameter(hidden = true) Pageable pageable,
+                                          @Parameter(hidden = true) @AuthenticationPrincipal UserToken userToken,
+                                          @ParameterObject @ModelAttribute PostSearchCondition searchCondition) {
         String userId = "";
         if(userToken != null) {
             userId = userToken.getUserId();
         }
-        return postService.findPostAll(pageable,lastPostId, userId, searchCondition);
+        return postService.findPostAll(pageable, userId, searchCondition);
     }
 
     @Operation(summary = "모집글 모집 상태 변경", description = "모집글의 모집 상태를 변경한다. ex) 모집중 -> 모집완료")
