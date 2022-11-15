@@ -2,6 +2,7 @@ package com.justcodeit.moyeo.study.model.inquiry;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.justcodeit.moyeo.study.interfaces.dto.scrap.PostSkillResponseDto;
+import com.justcodeit.moyeo.study.model.post.RecruitStatus;
 import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -33,14 +34,17 @@ public class PostQueryDto {
 
   @Schema(description = "모집글 스킬 조회 dto 리스트")
   private List<PostSkillResponseDto> skillList;
+  @Schema(description = "모집글 상태")
+  private RecruitStatus status;
 
   @QueryProjection
-  public PostQueryDto(Long postId, String title, LocalDateTime createdAt, Long viewCount, Boolean isScrapped) {
+  public PostQueryDto(Long postId, String title, LocalDateTime createdAt, Long viewCount, Boolean isScrapped, RecruitStatus status) {
     this.postId = postId;
     this.title = title;
     this.createdAt = createdAt;
     this.viewCount = viewCount;
     this.isScrapped = isScrapped;
+    this.status = status;
   }
 
   public void setSkillList(List<PostSkillResponseDto> skillList) {

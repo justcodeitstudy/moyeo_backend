@@ -83,7 +83,8 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
                         new CaseBuilder()
                                 .when(scrap.isNotNull().and(scrap.userId.eq(userId)))
                                 .then(true)
-                                .otherwise(false)
+                                .otherwise(false),
+                        post.recruitStatus
                 ))
                 .from(post)
                 .leftJoin(scrap).on(post.id.eq(scrap.postId))
@@ -130,7 +131,8 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
                         post.title,
                         post.createdAt,
                         post.viewCount,
-                        null
+                        null,
+                        post.recruitStatus
                 ))
                 .from(post)
                 .where(post.userId.eq(userId), post.postStatus.eq(PostStatus.NORMAL))
