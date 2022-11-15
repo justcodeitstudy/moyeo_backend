@@ -120,4 +120,9 @@ public class PostService {
                 .map(dto -> new PostSimpleResponseDto(dto.getPostId(), dto.getTitle(), dto.getCreatedAt(), dto.getViewCount(), dto.getIsScrapped(), dto.getSkillList()))
                 .collect(Collectors.toList());
     }
+    @Transactional
+    public void updateView(Long id) {
+        Post post = postRepository.findById(id).orElseThrow(PostCannotFoundException::new);
+        post.viewCountIncrease();
+    }
 }

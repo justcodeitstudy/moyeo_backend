@@ -74,7 +74,9 @@ public class PostController {
     })
     @GetMapping("/{id}")
     public PostResDto findPostById(@PathVariable(name = "id") Long id) {
-        return postService.findPost(id);
+        PostResDto postResponse = postService.findPost(id);
+        postService.updateView(id);
+        return postResponse;
     }
 
     @Operation(summary = "모집글 전체 목록", description = "모집글 List 조회")
