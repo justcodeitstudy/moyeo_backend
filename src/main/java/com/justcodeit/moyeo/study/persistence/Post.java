@@ -92,7 +92,7 @@ public class Post {
         this.contactInfo = postCreateReqDto.getContactInfo();
         this.modifyAt = LocalDateTime.now();
     }
-    private void viewCountIncrease() {
+    public void viewCountIncrease() {
         this.viewCount += 1;
     }
 

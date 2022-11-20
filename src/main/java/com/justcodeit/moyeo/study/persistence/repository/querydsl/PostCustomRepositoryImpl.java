@@ -178,7 +178,7 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
 
         if(StringUtils.hasText(postSearchReqDto.getTitle())) {
             String title = postSearchReqDto.getTitle();
-            expression = expression.and(post.title.like(title + "%"));
+            expression = expression.and(post.title.containsIgnoreCase(title));
         }
         if(postSearchReqDto.getStatus() != null) {
             RecruitStatus recruitStatus = postSearchReqDto.getStatus();
