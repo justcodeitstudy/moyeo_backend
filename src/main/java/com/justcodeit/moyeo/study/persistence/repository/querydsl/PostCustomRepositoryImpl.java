@@ -131,7 +131,6 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
                         post.title,
                         post.createdAt,
                         post.viewCount,
-                        null,
                         post.recruitStatus
                 ))
                 .from(post)
