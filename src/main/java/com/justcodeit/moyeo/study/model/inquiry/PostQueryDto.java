@@ -46,6 +46,14 @@ public class PostQueryDto {
     this.isScrapped = isScrapped;
     this.status = status;
   }
+  @QueryProjection
+  public PostQueryDto(Long postId, String title, LocalDateTime createdAt, Long viewCount, RecruitStatus status) {
+    this.postId = postId;
+    this.title = title;
+    this.createdAt = createdAt;
+    this.viewCount = viewCount;
+    this.status = status;
+  }
 
   public void setSkillList(List<PostSkillResponseDto> skillList) {
     this.skillList = skillList;
