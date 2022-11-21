@@ -4,6 +4,8 @@ import com.justcodeit.moyeo.study.application.skill.exception.SkillCannotFoundEx
 import com.justcodeit.moyeo.study.application.user.exception.UserCannotFoundException;
 import com.justcodeit.moyeo.study.interfaces.dto.user.EditProfileReqDto;
 import com.justcodeit.moyeo.study.interfaces.dto.user.ProfileInfo;
+import com.justcodeit.moyeo.study.interfaces.mapper.SkillMapper;
+import com.justcodeit.moyeo.study.model.skill.SkillDto;
 import com.justcodeit.moyeo.study.persistence.User;
 import com.justcodeit.moyeo.study.persistence.UserSkill;
 import com.justcodeit.moyeo.study.persistence.repository.SkillRepository;
@@ -26,7 +28,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public ProfileInfo accessProfile(String userId) {
         var user = getUser(userId);
-        var skillIds = getSkillIds(user.getId());
+        var skillIds = getSkillList(user.getId());
         return new ProfileInfo(
             user.getEmail(),
             user.getPicture(),
@@ -41,10 +43,18 @@ public class UserService {
             .orElseThrow(UserCannotFoundException::new);
     }
 
+    private List<SkillDto> getSkillList(Long userId) {
+        return userSkillRepository.findByUserId(userId)
+                .stream().map(
+                        userSkill -> SkillMapper.SKILL_INSTANCE.entityToSkillDto(
+                                skillRepository.findById(userSkill.getSkillId())
+                                .orElseThrow(SkillCannotFoundException::new)))
+                .collect(Collectors.toList());
+    }
     private List<Long> getSkillIds(Long userId) {
         return userSkillRepository.findByUserId(userId)
-            .stream().map(userSkill -> userSkill.getSkillId())
-            .collect(Collectors.toList());
+                .stream().map(userSkill -> userSkill.getSkillId())
+                .collect(Collectors.toList());
     }
 
     @Transactional

@@ -12,7 +12,6 @@ import org.springdoc.api.annotations.ParameterObject;
 public class SkillDto {
     @Schema(description = "기술스택 번호", type = "Long", defaultValue = "NULL")
     private Long id;
-
     @Schema(description = "해당 Skill이 어떤 분야에 속하는지에 대한 카테고리", type = "Long")
     private SkillCategory category;
     @Schema(description = "이름", type = "String")
