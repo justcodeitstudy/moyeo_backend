@@ -15,6 +15,7 @@ public enum ErrorCode {
   INVALID_TYPE_VALUE(400, "C005", "Invalid Type Value"),
 
   NOT_FOUND_USER(404, "U001", "No such User"),
+  UNAUTHORIZED(401, "U002", "Not Authorized on user"),
   NOT_FOUND_POST(404, "P001", "No such Post"),
   POST_ALREADY_DELETED(406, "P002", "Post Already Deleted"),
   NOT_FOUND_SKILL(404, "S001", "No such Skill"),

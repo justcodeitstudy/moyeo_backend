@@ -2,6 +2,7 @@ package com.justcodeit.moyeo.study.application.post;
 
 import com.justcodeit.moyeo.study.application.post.exception.PostCannotFoundException;
 import com.justcodeit.moyeo.study.application.skill.exception.SkillCannotFoundException;
+import com.justcodeit.moyeo.study.application.user.exception.UserCannotFoundException;
 import com.justcodeit.moyeo.study.interfaces.dto.post.PostCreateReqDto;
 import com.justcodeit.moyeo.study.interfaces.dto.post.PostResDto;
 import com.justcodeit.moyeo.study.interfaces.dto.post.PostSearchCondition;
@@ -12,10 +13,12 @@ import com.justcodeit.moyeo.study.model.inquiry.PostQueryDto;
 import com.justcodeit.moyeo.study.model.post.PostStatus;
 import com.justcodeit.moyeo.study.persistence.Post;
 import com.justcodeit.moyeo.study.persistence.PostSkill;
+import com.justcodeit.moyeo.study.persistence.User;
 import com.justcodeit.moyeo.study.persistence.repository.PostRepository;
 import com.justcodeit.moyeo.study.persistence.repository.PostSkillRepository;
 import com.justcodeit.moyeo.study.persistence.repository.RecruitmentRepository;
 import com.justcodeit.moyeo.study.persistence.repository.SkillRepository;
+import com.justcodeit.moyeo.study.persistence.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,6 +37,8 @@ public class PostService {
     private final SkillRepository skillRepository;
     private final PostSkillRepository postSkillRepository;
     private final RecruitmentRepository recruitmentRepository;
+    private final UserRepository userRepository;
+
     @Transactional
     public Long createPost(PostCreateReqDto postCreateReqDto, String userId) {
         PostMapper postMapper = PostMapper.INSTANCE;
@@ -60,6 +65,10 @@ public class PostService {
     public PostResDto findPost(Long id) {
         Post post = postRepository.findByIdCustom(id).orElseThrow(PostCannotFoundException::new);
         PostResDto postResDto = PostMapper.INSTANCE.entityToDto(post);
+
+        User user = userRepository.findByUserId(post.getUserId()).orElseThrow(UserCannotFoundException::new);
+        postResDto.setUserNick(user.getNickname());
+
         List<Long> skillIds = post.getPostSkills().stream()
                                 .map(postSkill -> postSkill.getSkill().getId())
                                 .collect(Collectors.toList());

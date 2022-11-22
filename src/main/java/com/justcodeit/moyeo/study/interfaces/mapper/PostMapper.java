@@ -21,6 +21,7 @@ public interface PostMapper {
     Post createReqDtoToEntity(PostCreateReqDto postCreateReqDto);
 
     @Mapping(target = "skillIds", ignore = true)
+    @Mapping(target = "userNick", ignore = true)
     PostResDto entityToDto(Post post);
 
     List<PostResDto> entityListToDtoList(List<Post> postList);
