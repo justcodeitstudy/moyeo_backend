@@ -1,4 +1,4 @@
-package com.justcodeit.moyeo.study.application;
+package com.justcodeit.moyeo.study.application.oauth;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;

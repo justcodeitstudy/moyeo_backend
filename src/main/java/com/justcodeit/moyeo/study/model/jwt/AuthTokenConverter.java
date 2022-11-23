@@ -1,6 +1,6 @@
 package com.justcodeit.moyeo.study.model.jwt;
 
-import com.justcodeit.moyeo.study.application.JwtProvider;
+import com.justcodeit.moyeo.study.application.oauth.JwtProvider;
 import com.justcodeit.moyeo.study.model.session.UserPrincipal;
 import java.util.HashMap;
 import java.util.Map;
