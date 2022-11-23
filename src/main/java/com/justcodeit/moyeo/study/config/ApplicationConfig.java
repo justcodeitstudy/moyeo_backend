@@ -1,6 +1,6 @@
 package com.justcodeit.moyeo.study.config;
 
-import com.justcodeit.moyeo.study.application.JwtProvider;
+import com.justcodeit.moyeo.study.application.oauth.JwtProvider;
 import com.justcodeit.moyeo.study.common.RandomIdUtil;
 import com.justcodeit.moyeo.study.config.filter.TokenAuthFilter;
 import com.justcodeit.moyeo.study.model.jwt.AuthTokenConverter;
