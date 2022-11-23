@@ -7,32 +7,33 @@ import com.justcodeit.moyeo.study.config.filter.TokenAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @RequiredArgsConstructor
 @Configuration
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 
   private final OAuthUserService oAuthUserService;
   private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
   private final TokenAuthFilter tokenAuthFilter;
 
   private final AuthenticationEntryPoint authenticationEntryPoint;
-
   @Bean
-  public AuthenticationManager authenticationManager() throws Exception {
-    return super.authenticationManager();
+  public WebSecurityCustomizer customizer() {
+    return web -> web.ignoring()
+            .antMatchers("/v3/**") // swagger-ui 관련,
+            .antMatchers("/v1/**") // swagger-ui 관련,
+            .antMatchers("/swagger-ui/**")
+            .antMatchers("/");
   }
-
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
+  @Bean
+  protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
     http
         .addFilterAfter(tokenAuthFilter,
             UsernamePasswordAuthenticationFilter.class) // request 발생시 auth 필터
@@ -40,10 +41,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS); // 세션 정보 x
 
     http.authorizeRequests()
-        .antMatchers("/v3/**").permitAll() // swagger-ui 관련,
-        .antMatchers("/v1/**").permitAll() // swagger-ui 관련,
-        .antMatchers("/swagger-ui/**").permitAll()
-        .antMatchers("/").permitAll()
         .antMatchers("/scraps/**").hasRole("USER");
 
     http.headers().defaultsDisabled().contentTypeOptions();
@@ -56,14 +53,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .authenticationEntryPoint(authenticationEntryPoint) // 인증문제 발생시 처리
         .and()
         .oauth2Login()
-        .userInfoEndpoint().userService(oAuthUserService) //oauth 인증후 처리
+        .userInfoEndpoint()
+            .userService(oAuthUserService) //oauth 인증후 처리
         .and()
         .successHandler(oAuth2AuthenticationSuccessHandler);
 //        .failureHandler();// 그럴일은 없어보이지만, 필요한 정보가 선택적일때 누락되어 보내질수 있으므로 작성할때는 이쪽에.
-
+    return http.build();
   }
-
-  @Override
-  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-  } // 없으면 스프링 시큐리티의 버그로 @SpringBootTest 시 발광을 하기 때문에 추가
 }
